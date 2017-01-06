@@ -68,7 +68,8 @@ namespace RogueLike
             _enemies.Add("dwarf", new Enemy()
             {
                 Texture = Content.Load<Texture2D>("enemy/dwarf"),
-                Position = new Position(32, 32)
+                Position = new Position(32, 32),
+                XPReward = 50
             });
 
             for (int i = 0; i < WIDTH; i++)
@@ -338,12 +339,14 @@ namespace RogueLike
 
         void KillEnemey(string name)
         {
+            Drop(_enemies[name].XPReward);
             _enemies.Remove(name);
-            Drop();
         }
 
-        void Drop()
+        void Drop(int xp)
         {
+            // give xp
+            _player.XP += xp;
             // drop item
             _player.Inventory.Items.Add(new LargeSword());
             UpdatePlayerStats(new LargeSword());
@@ -362,6 +365,17 @@ namespace RogueLike
                     _player.Shield += ii.Shield;
             }
             _player.Inventory.Amount = _player.Inventory.Items.Count;
+            if (_player.XP >= _player.Level.XP)
+            {
+                int xp = _player.Level.XP - _player.XP;
+                LevelUp();
+                _player.XP += xp;
+            }
+        }
+
+        void LevelUp()
+        {
+            
         }
     }
 }
