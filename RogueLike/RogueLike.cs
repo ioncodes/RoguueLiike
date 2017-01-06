@@ -336,5 +336,10 @@ namespace RogueLike
             UnloadContent();
             LoadContent();
         }
+
+        void KillEnemey()
+        {
+            
+        }
     }
 }

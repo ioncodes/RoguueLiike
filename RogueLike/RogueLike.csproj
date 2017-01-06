@@ -40,6 +40,8 @@
   <ItemGroup>
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyKI.cs" />
+    <Compile Include="Inventory\InventoryItem.cs" />
+    <Compile Include="Inventory\LargeSword.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="RogueLike.cs" />
