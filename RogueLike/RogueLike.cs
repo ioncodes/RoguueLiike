@@ -184,28 +184,20 @@ namespace RogueLike
 
         bool VerifyMovement(int x, int y)
         {
+            int virtPosX = 0;
+            int virtPosY = 0;
             if (x != 0)
             {
-                int virtPosX = (_player.Position.X + (x*TILE_WIDTH)) / TILE_WIDTH;
-                int virtPosY = _player.Position.Y / TILE_HEIGHT;
-
-                if (_map[virtPosX, virtPosY].Name == "wall/vines0")
-                {
-                    return false;
-                }
+                virtPosX = (_player.Position.X + (x*TILE_WIDTH)) / TILE_WIDTH;
+                virtPosY = _player.Position.Y / TILE_HEIGHT;
             }
             else if (y != 0)
             {
-                int virtPosX = _player.Position.X / TILE_WIDTH;
-                int virtPosY = (_player.Position.Y + (y*TILE_HEIGHT)) / TILE_HEIGHT;
-
-                if (_map[virtPosX, virtPosY].Name == "wall/vines0")
-                {
-                    return false;
-                }
+                virtPosX = _player.Position.X / TILE_WIDTH;
+                virtPosY = (_player.Position.Y + (y*TILE_HEIGHT)) / TILE_HEIGHT;
             }
 
-            return true;
+            return _map[virtPosX, virtPosY].Name != "wall/vines0";
         }
     }
 }
