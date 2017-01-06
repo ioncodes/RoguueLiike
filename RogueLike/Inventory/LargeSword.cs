@@ -12,5 +12,6 @@ namespace RogueLike
         public override ItemType ItemType { get; } = ItemType.Weapon;
         public override int Damage { get; } = 6;
         public override int Health { get; } = 0;
+        public override int Shield { get; } = 0;
     }
 }

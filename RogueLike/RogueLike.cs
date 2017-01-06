@@ -358,6 +358,8 @@ namespace RogueLike
                     _player.Attack += ii.Damage;
                 else if (ii.ItemType == ItemType.HealthSlot)
                     _player.Health += ii.Health;
+                else if (ii.ItemType == ItemType.Armor)
+                    _player.Shield += ii.Shield;
             }
             _player.Inventory.Amount = _player.Inventory.Items.Count;
         }
