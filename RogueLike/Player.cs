@@ -15,7 +15,7 @@ namespace RogueLike
 
     public class Position
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X { get; set; } = 64;
+        public int Y { get; set; } = 64;
     }
 }
