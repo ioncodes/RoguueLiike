@@ -344,8 +344,9 @@ namespace RogueLike
 
         void Drop()
         {
+            // drop item
             _player.Inventory.Items.Add(new LargeSword());
-            UpdatePlayerStats();
+            UpdatePlayerStats(new LargeSword());
         }
 
         void UpdatePlayerStats(InventoryItem ii = null)
