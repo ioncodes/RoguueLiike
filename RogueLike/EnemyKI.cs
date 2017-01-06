@@ -10,7 +10,7 @@ namespace RogueLike
     {
         public int[] Decide()
         {
-            return new[] {32, 32};
+            return new[] {0, 0};
         }
     }
 }

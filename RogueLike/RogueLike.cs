@@ -112,24 +112,52 @@ namespace RogueLike
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Left) && VerifyMovement(-1, 0))
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                _player.Position.X -= TILE_WIDTH;
+                if (VerifyMovement(-1, 0))
+                {
+                    _player.Position.X -= TILE_WIDTH;
+                }
+                else if (IsEnemyNext(-1, 0))
+                {
+                    Attack(-1, 0);
+                }
                 MoveEnemies();
             }
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Right) && VerifyMovement(1, 0))
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                _player.Position.X += TILE_WIDTH;
+                if (VerifyMovement(1, 0))
+                {
+                    _player.Position.X += TILE_WIDTH;
+                }
+                else if (IsEnemyNext(1, 0))
+                {
+                    Attack(1, 0);
+                }
                 MoveEnemies();
             }
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Down) && VerifyMovement(0, 1))
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                _player.Position.Y += TILE_HEIGHT;
+                if (VerifyMovement(0, 1))
+                {
+                    _player.Position.Y += TILE_HEIGHT;
+                }
+                else if (IsEnemyNext(0, 1))
+                {
+                    Attack(0, 1);
+                }
                 MoveEnemies();
             }
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Up) && VerifyMovement(0, -1))
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                _player.Position.Y -= TILE_HEIGHT;
+                if (VerifyMovement(0, -1))
+                {
+                    _player.Position.Y -= TILE_HEIGHT;
+                }
+                else if (IsEnemyNext(0, -1))
+                {
+                    Attack(0, -1);
+                }
                 MoveEnemies();
             }
 
@@ -184,20 +212,63 @@ namespace RogueLike
 
         bool VerifyMovement(int x, int y)
         {
+            int[] virtPos = GetVirtualPostition(x, y);
+
+            bool isValid = _map[virtPos[0], virtPos[1]].Name != "wall/vines0";
+            if (isValid == false) return false;
+            foreach (var enemy in _enemies)
+            {
+                if (IsCovering(enemy.Value.Position, new Position(virtPos[0] * TILE_WIDTH, virtPos[1] * TILE_HEIGHT)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        void Attack(int x, int y)
+        {
+            int[] virtPos = GetVirtualPostition(x, y);
+            foreach (var enemy in _enemies)
+            {
+                if (IsCovering(enemy.Value.Position, new Position(virtPos[0] * TILE_WIDTH, virtPos[1] * TILE_HEIGHT)))
+                {
+                    Console.WriteLine("Attack");
+                }
+            }
+        }
+
+        bool IsCovering(Position p1, Position p2)
+        {
+            if (p1.X == p2.X && p1.Y == p2.Y)
+                return true;
+            return false;
+        }
+
+        bool IsEnemyNext(int x, int y)
+        {
+            int[] virtPos = GetVirtualPostition(x, y);
+
+            return _map[virtPos[0], virtPos[1]].Name != "wall/dwarf";
+        }
+
+        int[] GetVirtualPostition(int x, int y)
+        {
             int virtPosX = 0;
             int virtPosY = 0;
             if (x != 0)
             {
-                virtPosX = (_player.Position.X + (x*TILE_WIDTH)) / TILE_WIDTH;
+                virtPosX = (_player.Position.X + (x * TILE_WIDTH)) / TILE_WIDTH;
                 virtPosY = _player.Position.Y / TILE_HEIGHT;
             }
             else if (y != 0)
             {
                 virtPosX = _player.Position.X / TILE_WIDTH;
-                virtPosY = (_player.Position.Y + (y*TILE_HEIGHT)) / TILE_HEIGHT;
+                virtPosY = (_player.Position.Y + (y * TILE_HEIGHT)) / TILE_HEIGHT;
             }
 
-            return _map[virtPosX, virtPosY].Name != "wall/vines0";
+            return new[] {virtPosX, virtPosY};
         }
     }
 }
