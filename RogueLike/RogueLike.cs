@@ -344,7 +344,21 @@ namespace RogueLike
 
         void Drop()
         {
-            _player.
+            _player.Inventory.Items.Add(new LargeSword());
+            UpdatePlayerStats();
+        }
+
+        void UpdatePlayerStats(InventoryItem ii = null)
+        {
+            if (ii != null)
+            {
+                // Update Player Stats with Item Stats
+                if(ii.ItemType == ItemType.Weapon)
+                    _player.Attack += ii.Damage;
+                else if (ii.ItemType == ItemType.HealthSlot)
+                    _player.Health += ii.Health;
+            }
+            _player.Inventory.Amount = _player.Inventory.Items.Count;
         }
     }
 }

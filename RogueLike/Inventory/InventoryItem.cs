@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RogueLike
 {
-    abstract class InventoryItem
+    public abstract class InventoryItem
     {
         public abstract string Name { get; }
         public abstract ItemType ItemType { get; }
@@ -17,6 +17,7 @@ namespace RogueLike
     public enum ItemType
     {
         Weapon,
-        Armor
+        Armor,
+        HealthSlot
     }
 }
