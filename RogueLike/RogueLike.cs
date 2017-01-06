@@ -186,10 +186,23 @@ namespace RogueLike
         {
             if (x != 0)
             {
-                int virtPosX = _player.Position.X + (x*WIDTH) / WIDTH;
-                int virtPosY = _player.Position.Y / HEIGHT;
+                int virtPosX = (_player.Position.X + (x*TILE_WIDTH)) / TILE_WIDTH;
+                int virtPosY = _player.Position.Y / TILE_HEIGHT;
 
-                
+                if (_map[virtPosX, virtPosY].Name == "wall/vines0")
+                {
+                    return false;
+                }
+            }
+            else if (y != 0)
+            {
+                int virtPosX = _player.Position.X / TILE_WIDTH;
+                int virtPosY = (_player.Position.Y + (y*TILE_HEIGHT)) / TILE_HEIGHT;
+
+                if (_map[virtPosX, virtPosY].Name == "wall/vines0")
+                {
+                    return false;
+                }
             }
 
             return true;
