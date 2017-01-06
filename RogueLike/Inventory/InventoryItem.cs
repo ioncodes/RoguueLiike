@@ -12,6 +12,7 @@ namespace RogueLike
         public abstract ItemType ItemType { get; }
         public abstract int Damage { get; }
         public abstract int Health { get; }
+        public abstract int Shield { get; }
     }
 
     public enum ItemType
