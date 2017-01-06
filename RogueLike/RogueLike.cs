@@ -120,7 +120,8 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(-1, 0))
                 {
-                    Attack(-1, 0);
+                    if(Attack(-1, 0))
+                        _player.Position.X -= TILE_WIDTH;
                 }
                 MoveEnemies();
             }
@@ -132,7 +133,8 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(1, 0))
                 {
-                    Attack(1, 0);
+                    if(Attack(1, 0))
+                        _player.Position.X += TILE_WIDTH;
                 }
                 MoveEnemies();
             }
@@ -144,7 +146,8 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(0, 1))
                 {
-                    Attack(0, 1);
+                    if(Attack(0, 1))
+                        _player.Position.Y += TILE_HEIGHT;
                 }
                 MoveEnemies();
             }
@@ -156,7 +159,8 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(0, -1))
                 {
-                    Attack(0, -1);
+                    if(Attack(0, -1))
+                        _player.Position.Y -= TILE_HEIGHT;
                 }
                 MoveEnemies();
             }
@@ -227,7 +231,7 @@ namespace RogueLike
             return true;
         }
 
-        void Attack(int x, int y)
+        bool Attack(int x, int y)
         {
             int[] virtPos = GetVirtualPostition(x, y);
             foreach (var enemy in _enemies)
@@ -235,8 +239,22 @@ namespace RogueLike
                 if (IsCovering(enemy.Value.Position, new Position(virtPos[0] * TILE_WIDTH, virtPos[1] * TILE_HEIGHT)))
                 {
                     Console.WriteLine("Attack");
+
+                    Enemy target = GetEnemy(virtPos);
+
+                    _player.Health -= target.Attack;
+                    target.Health -= _player.Attack;
+
+                    if (target.Health <= 0)
+                    {
+                        target.Texture.Dispose();
+                        _enemies.Remove("dwarf");
+                        return true;
+                    }
+                    return false;
                 }
             }
+            return false;
         }
 
         bool IsCovering(Position p1, Position p2)
@@ -249,7 +267,6 @@ namespace RogueLike
         bool IsEnemyNext(int x, int y)
         {
             int[] virtPos = GetVirtualPostition(x, y);
-
             return _map[virtPos[0], virtPos[1]].Name != "wall/dwarf";
         }
 
@@ -269,6 +286,38 @@ namespace RogueLike
             }
 
             return new[] {virtPosX, virtPosY};
+        }
+
+        Enemy GetEnemy(int x, int y)
+        {
+            int[] virtPos = GetVirtualPostition(x, y);
+            virtPos[0] *= TILE_WIDTH;
+            virtPos[1] *= TILE_HEIGHT;
+
+            foreach (var enemy in _enemies)
+            {
+                if (IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])))
+                {
+                    return enemy.Value;
+                }
+            }
+
+            return null;
+        }
+
+        Enemy GetEnemy(int[] virtPos)
+        {
+            virtPos[0] *= TILE_WIDTH;
+            virtPos[1] *= TILE_HEIGHT;
+            foreach (var enemy in _enemies)
+            {
+                if (IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])))
+                {
+                    return enemy.Value;
+                }
+            }
+
+            return null;
         }
     }
 }
