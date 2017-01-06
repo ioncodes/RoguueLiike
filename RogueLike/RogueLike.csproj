@@ -38,7 +38,10 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enemy.cs" />
+    <Compile Include="EnemyKI.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Position.cs" />
     <Compile Include="RogueLike.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

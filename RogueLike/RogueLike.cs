@@ -16,13 +16,17 @@ namespace RogueLike
         readonly GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
-        //Texture2D[,] _map = new Texture2D[3,3];
+        private const int TILE_WIDTH = 32;
+        private const int TILE_HEIGHT = 32;
+        private const int WIDTH = 20;
+        private const int HEIGHT = 20;
+
+        Texture2D[,] _map = new Texture2D[WIDTH,HEIGHT];
 
         private Player _player = new Player();
         readonly Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
 
-        private const int WIDTH = 32;
-        private const int HEIGHT = 32;
 
         int _framesPassed = 0;
 
@@ -41,8 +45,8 @@ namespace RogueLike
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _graphics.PreferredBackBufferWidth = 20*WIDTH;
-            _graphics.PreferredBackBufferHeight = 20*HEIGHT;
+            _graphics.PreferredBackBufferWidth = WIDTH*TILE_WIDTH;
+            _graphics.PreferredBackBufferHeight = HEIGHT*TILE_HEIGHT;
             _graphics.ApplyChanges();
             base.Initialize();
         }
@@ -60,6 +64,27 @@ namespace RogueLike
             _textures.Add("wall", Content.Load<Texture2D>("wall/vines0"));
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
+
+            _enemies.Add("dwarf", new Enemy()
+            {
+                Texture = Content.Load<Texture2D>("enemy/dwarf"),
+                Position = new Position(32, 32)
+            });
+
+            for (int i = 0; i < WIDTH; i++)
+            {
+                for (int j = 0; j < HEIGHT; j++)
+                {
+                    if (i == 0 || j == 0 || j == HEIGHT-1 || i == WIDTH-1)
+                    {
+                        _map[j, i] = _textures.FirstOrDefault(t => t.Key == "wall").Value;
+                    }
+                    else
+                    {
+                        _map[j, i] = _textures.FirstOrDefault(t => t.Key == "floor").Value;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -84,16 +109,29 @@ namespace RogueLike
                 _framesPassed = 0;
             }
             _framesPassed++;
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Left))
-                _player.Position.X -= WIDTH;
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Right))
-                _player.Position.X += WIDTH;
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Down))
-                _player.Position.Y += HEIGHT;
-            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Up))
-                _player.Position.Y -= HEIGHT;
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Left) && VerifyMovement(-1, 0))
+            {
+                _player.Position.X -= TILE_WIDTH;
+                MoveEnemies();
+            }
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Right) && VerifyMovement(1, 0))
+            {
+                _player.Position.X += TILE_WIDTH;
+                MoveEnemies();
+            }
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Down) && VerifyMovement(0, 1))
+            {
+                _player.Position.Y += TILE_HEIGHT;
+                MoveEnemies();
+            }
+            if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Up) && VerifyMovement(0, -1))
+            {
+                _player.Position.Y -= TILE_HEIGHT;
+                MoveEnemies();
+            }
 
             base.Update(gameTime);
         }
@@ -107,25 +145,54 @@ namespace RogueLike
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < WIDTH; i++)
             {
-                for (int j = 0; j < 20; j++)
+                for (int j = 0; j < HEIGHT; j++)
                 {
-                    if (i == 0 || j == 0 || j == 19 || i == 19)
+                    if (i == 0 || j == 0 || j == HEIGHT-1 || i == WIDTH-1)
                     {
-                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "wall").Value, new Vector2(i * WIDTH, j * HEIGHT));
+                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "wall").Value, new Vector2(i * TILE_WIDTH, j * TILE_HEIGHT));
                     }
                     else
                     {
-                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "floor").Value, new Vector2(i * WIDTH, j * HEIGHT));
+                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "floor").Value, new Vector2(i * TILE_WIDTH, j * TILE_HEIGHT));
                     }
                 }
             }
 
             _spriteBatch.Draw(_player.Texture, new Vector2(_player.Position.X, _player.Position.Y));
+
+            foreach (var enemy in _enemies)
+            {
+                _spriteBatch.Draw(enemy.Value.Texture, new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y));
+            }
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        void MoveEnemies()
+        {
+            foreach (var enemy in _enemies)
+            {
+                int[] mov = enemy.Value.EnemeKi.Decide();
+                enemy.Value.Position.X += mov[0];
+                enemy.Value.Position.X += mov[1];
+            }
+        }
+
+        bool VerifyMovement(int x, int y)
+        {
+            if (x != 0)
+            {
+                int virtPosX = _player.Position.X + (x*WIDTH) / WIDTH;
+                int virtPosY = _player.Position.Y / HEIGHT;
+
+                
+            }
+
+            return true;
         }
     }
 }

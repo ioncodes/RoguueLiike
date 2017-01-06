@@ -7,11 +7,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueLike
 {
-    public class Player
+    public class Enemy
     {
         public Texture2D Texture { get; set; }
-        public Position Position { get; set; } = new Position(64,64);
-        public int Health { get; set; } = 10;
-        public int Attack { get; set; } = 15;
+        public Position Position { get; set; }
+        public int Health { get; set; } = 20;
+        public int Attack { get; set; } = 5;
+        public EnemyKI EnemeKi { get; } = new EnemyKI();
     }
 }
