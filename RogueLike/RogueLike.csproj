@@ -43,6 +43,8 @@
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Inventory\InventoryItem.cs" />
     <Compile Include="Inventory\LargeSword.cs" />
+    <Compile Include="Levels\Level0.cs" />
+    <Compile Include="Levels\LevelInfo.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="RogueLike.cs" />
