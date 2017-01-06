@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,9 +17,10 @@ namespace RogueLike
         SpriteBatch spriteBatch;
         Texture2D[,] map = new Texture2D[3,3];
         private Player player = new Player();
+        Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
 
-        private const int WIDTH = 16;
-        private const int HEIGHT = 16;
+        private const int WIDTH = 32;
+        private const int HEIGHT = 32;
         int framesPassed = 0;
 
         public RogueLike()
@@ -34,7 +38,9 @@ namespace RogueLike
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            graphics.PreferredBackBufferWidth = 20*WIDTH;
+            graphics.PreferredBackBufferHeight = 20*HEIGHT;
+            graphics.ApplyChanges();
             base.Initialize();
         }
 
@@ -46,31 +52,23 @@ namespace RogueLike
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            spriteBatch = new SpriteBatch(GraphicsDevice);
             
-            // Load map
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    map[i,j] = Content.Load<Texture2D>("f" + i + j);
-                }
-            }
+            textures.Add("floor", Content.Load<Texture2D>("floor/vines0"));
+            textures.Add("wall", Content.Load<Texture2D>("wall/vines0"));
+
+            player.Texture = Content.Load<Texture2D>("player/base/human_m");
+
 
             /* Fix the order to display easy */
-            var fix2 = map[2, 2];
-            var fix1 = map[1, 2];
-            var fix0 = map[0, 2];
-            map[0, 2] = map[0, 0];
-            map[1, 2] = map[1, 0];
-            map[2, 2] = map[2, 0];
-            map[0, 0] = fix0;
-            map[1, 0] = fix1;
-            map[2, 0] = fix2;
-
-            // Load Player
-            player.Texture = Content.Load<Texture2D>("p1");
+            //var fix2 = map[2, 2];
+            //var fix1 = map[1, 2];
+            //var fix0 = map[0, 2];
+            //map[0, 2] = map[0, 0];
+            //map[1, 2] = map[1, 0];
+            //map[2, 2] = map[2, 0];
+            //map[0, 0] = fix0;
+            //map[1, 0] = fix1;
+            //map[2, 0] = fix2;
         }
 
         /// <summary>
@@ -116,16 +114,23 @@ namespace RogueLike
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            int x = 0;
             spriteBatch.Begin();
-            for (int i = 0; i < 3; i++)
+
+            for (int i = 0; i < 20; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 20; j++)
                 {
-                    spriteBatch.Draw(map[i, j], new Vector2(x*WIDTH, j*HEIGHT));
+                    if (i == 0 || j == 0 || j == 19 || i == 19)
+                    {
+                        spriteBatch.Draw(textures.FirstOrDefault(t => t.Key == "wall").Value, new Vector2(i*32, j*32));
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(textures.FirstOrDefault(t => t.Key == "floor").Value, new Vector2(i * 32, j * 32));
+                    }
                 }
-                x++;
             }
+
             spriteBatch.Draw(player.Texture, new Vector2(player.Position.X, player.Position.Y));
             spriteBatch.End();
 
