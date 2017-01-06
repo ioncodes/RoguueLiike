@@ -13,5 +13,6 @@ namespace RogueLike
         public Position Position { get; set; } = new Position(64,64);
         public int Health { get; set; } = 1;
         public int Attack { get; set; } = 15;
+        public Inventory Inventory { get; } = new Inventory();
     }
 }

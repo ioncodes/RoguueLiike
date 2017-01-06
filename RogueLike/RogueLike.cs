@@ -253,8 +253,7 @@ namespace RogueLike
                         Die();
                     if (target.Health <= 0)
                     {
-                        target.Texture.Dispose();
-                        _enemies.Remove("dwarf");
+                        KillEnemey("dwarf");
                         return true;
                     }
                     return false;
@@ -337,9 +336,15 @@ namespace RogueLike
             LoadContent();
         }
 
-        void KillEnemey()
+        void KillEnemey(string name)
         {
-            
+            _enemies.Remove(name);
+            Drop();
+        }
+
+        void Drop()
+        {
+            _player.
         }
     }
 }
