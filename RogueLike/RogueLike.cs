@@ -94,6 +94,10 @@ namespace RogueLike
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            _textures.Clear();
+            _enemies.Clear();
+            _map = new Texture2D[WIDTH, HEIGHT];
+            _player = new Player();
             Content.Unload();
         }
 
@@ -245,6 +249,8 @@ namespace RogueLike
                     _player.Health -= target.Attack;
                     target.Health -= _player.Attack;
 
+                    if (IsPlayerDead())
+                        Die();
                     if (target.Health <= 0)
                     {
                         target.Texture.Dispose();
@@ -318,6 +324,17 @@ namespace RogueLike
             }
 
             return null;
+        }
+
+        bool IsPlayerDead()
+        {
+            return _player.Health <= 0;
+        }
+
+        void Die()
+        {
+            UnloadContent();
+            LoadContent();
         }
     }
 }
