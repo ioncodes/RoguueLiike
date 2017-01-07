@@ -73,7 +73,7 @@ namespace RogueLike
             _enemies.Add("dwarf", new Enemy()
             {
                 Texture = Content.Load<Texture2D>("enemy/dwarf"),
-                Position = new Position(32, 32),
+                Position = _player.Position, // for debug
                 XPReward = 50
             });
 
@@ -95,6 +95,7 @@ namespace RogueLike
                             Texture = _textures.FirstOrDefault(t => t.Key == "floor").Value
                         };
                         _player.Position = new Position(i*TILE_WIDTH,j*TILE_HEIGHT);
+                        _enemies.First().Value.Position = new Position(_player.Position.X, _player.Position.Y); // debug
                     }
                     else
                     {
@@ -105,6 +106,10 @@ namespace RogueLike
                     }
                 }
             }
+
+            /* DEBUG */
+            _enemies.Values.First().Position.X -= 32;
+            _enemies.Values.First().Position.Y -= 32;
 
             _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
             foreach (var enemy in _enemies)
@@ -245,14 +250,14 @@ namespace RogueLike
             //_spriteBatch.Draw(_player.Texture, new Vector2(_player.Position.X, _player.Position.Y));
             DrawHealthBar(_player.Health, _player.MaxHealth, new Vector2(_player.Position.X, _player.Position.Y));
 
-            //foreach (var enemy in _enemies)
-            //{
-            //    Vector2 pos = new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y);
-            //    _spriteBatch.Draw(enemy.Value.Texture, pos);
-            //    int maxHealth = enemy.Value.MaxHealth;
-            //    int health = enemy.Value.Health;
-            //    DrawHealthBar(health, maxHealth, pos);
-            //}
+            foreach (var enemy in _enemies)
+            {
+                Vector2 pos = new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y);
+                _spriteBatch.Draw(enemy.Value.Texture, pos);
+                int maxHealth = enemy.Value.MaxHealth;
+                int health = enemy.Value.Health;
+                DrawHealthBar(health, maxHealth, pos);
+            }
 
             _spriteBatch.End();
 
