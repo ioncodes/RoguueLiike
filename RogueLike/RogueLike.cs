@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RogueLike.Levels;
+using RogueLikeMapBuilder;
 
 namespace RogueLike
 {
@@ -20,8 +23,9 @@ namespace RogueLike
 
         private const int TILE_WIDTH = 32;
         private const int TILE_HEIGHT = 32;
-        private const int WIDTH = 20;
-        private const int HEIGHT = 20;
+        private const int WIDTH = 150;
+        private const int HEIGHT = 150;
+        private const int FOV = 20;
 
         //Texture2D[,] _map = new Texture2D[WIDTH,HEIGHT];
         MapTile[,] _map = new MapTile[WIDTH,HEIGHT];
@@ -46,8 +50,8 @@ namespace RogueLike
         /// </summary>
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = WIDTH*TILE_WIDTH;
-            _graphics.PreferredBackBufferHeight = HEIGHT*TILE_HEIGHT;
+            _graphics.PreferredBackBufferWidth = FOV*TILE_WIDTH;
+            _graphics.PreferredBackBufferHeight = FOV*TILE_HEIGHT;
             _graphics.ApplyChanges();
             base.Initialize();
         }
@@ -73,22 +77,30 @@ namespace RogueLike
                 XPReward = 50
             });
 
+            csMapbuilder mpbuild = new csMapbuilder(WIDTH, HEIGHT); //the numbers are the starting map size
+            int[,] randomMap = new int[WIDTH,HEIGHT];
+            if (mpbuild.Build_ConnectedStartRooms() == true)
+            {
+                randomMap = mpbuild.map;
+            }
+
             for (int i = 0; i < WIDTH; i++)
             {
                 for (int j = 0; j < HEIGHT; j++)
                 {
-                    if (i == 0 || j == 0 || j == HEIGHT-1 || i == WIDTH-1)
+                    if (randomMap[i, j] == 0)
                     {
-                        _map[j, i] = new MapTile()
+                        _map[i, j] = new MapTile()
                         {
-                            Texture = _textures.FirstOrDefault(t => t.Key == "wall").Value
+                            Texture = _textures.FirstOrDefault(t => t.Key == "floor").Value
                         };
+                        _player.Position = new Position(i*TILE_WIDTH,j*TILE_HEIGHT);
                     }
                     else
                     {
-                        _map[j, i] = new MapTile()
+                        _map[i, j] = new MapTile()
                         {
-                            Texture = _textures.FirstOrDefault(t => t.Key == "floor").Value
+                            Texture = _textures.FirstOrDefault(t => t.Key == "wall").Value
                         };
                     }
                 }
@@ -213,24 +225,24 @@ namespace RogueLike
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-            for (int i = 0; i < WIDTH; i++)
+
+            for (int i = 0; i < FOV; i++)
             {
-                for (int j = 0; j < HEIGHT; j++)
+                var x = (_player.Position.X/32) + i;
+                if (x >= WIDTH)
+                    continue;
+                for (int j = 0; j < FOV; j++)
                 {
-                    if (i == 0 || j == 0 || j == HEIGHT - 1 || i == WIDTH - 1)
-                    {
-                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "wall").Value,
-                            new Vector2(i*TILE_WIDTH, j*TILE_HEIGHT));
-                    }
-                    else
-                    {
-                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "floor").Value,
-                            new Vector2(i*TILE_WIDTH, j*TILE_HEIGHT));
-                    }
+                    var y = (_player.Position.Y/32) + j;
+                    if (y >= HEIGHT)
+                        continue;
+                    _spriteBatch.Draw(_map[x,y].Texture, new Vector2(i*32, j*32));
+                    if(_map[x,y].EntityTexture != null)
+                        _spriteBatch.Draw(_map[x,y].EntityTexture, new Vector2(i*32,j*32));
                 }
             }
 
-            _spriteBatch.Draw(_player.Texture, new Vector2(_player.Position.X, _player.Position.Y));
+            //_spriteBatch.Draw(_player.Texture, new Vector2(_player.Position.X, _player.Position.Y));
             DrawHealthBar(_player.Health, _player.MaxHealth, new Vector2(_player.Position.X, _player.Position.Y));
 
             foreach (var enemy in _enemies)
