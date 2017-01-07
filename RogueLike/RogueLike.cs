@@ -27,6 +27,9 @@ namespace RogueLike
         private const int HEIGHT = 150;
         private const int FOV = 20;
 
+        private const int ENEMY_AMOUNT = 200;
+        Random r = new Random();
+
         //Texture2D[,] _map = new Texture2D[WIDTH,HEIGHT];
         MapTile[,] _map = new MapTile[WIDTH,HEIGHT];
 
@@ -70,13 +73,6 @@ namespace RogueLike
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
-            _enemies.Add("dwarf", new Enemy()
-            {
-                Texture = Content.Load<Texture2D>("enemy/dwarf"),
-                Position = _player.Position, // for debug
-                XPReward = 50
-            });
-
             csMapbuilder mpbuild = new csMapbuilder(WIDTH, HEIGHT); //the numbers are the starting map size
             int[,] randomMap = new int[WIDTH,HEIGHT];
             if (mpbuild.Build_ConnectedStartRooms() == true)
@@ -95,7 +91,15 @@ namespace RogueLike
                             Texture = _textures.FirstOrDefault(t => t.Key == "floor").Value
                         };
                         _player.Position = new Position(i*TILE_WIDTH,j*TILE_HEIGHT);
-                        _enemies.First().Value.Position = new Position(_player.Position.X, _player.Position.Y); // debug
+                        if (r.Next(0,2) == 1)
+                        {
+                            _enemies.Add("dwarf" + i + j, new Enemy()
+                            {
+                                Texture = Content.Load<Texture2D>("enemy/dwarf"),
+                                Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT),
+                                XPReward = 50
+                            });
+                        }
                     }
                     else
                     {
@@ -106,10 +110,6 @@ namespace RogueLike
                     }
                 }
             }
-
-            /* DEBUG */
-            _enemies.Values.First().Position.X -= 32;
-            _enemies.Values.First().Position.Y -= 32;
 
             _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
             foreach (var enemy in _enemies)
@@ -135,7 +135,6 @@ namespace RogueLike
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
             _textures.Clear();
             _enemies.Clear();
             _map = new MapTile[WIDTH,HEIGHT];
@@ -249,17 +248,17 @@ namespace RogueLike
 
             for (int i = -10; i < FOV/2; i++)
             {
-                var x = (_player.Position.X/32) + i;
+                var x = (_player.Position.X/TILE_WIDTH) + i;
                 if (x >= WIDTH)
                     continue;
                 for (int j = -10; j < FOV/2; j++)
                 {
-                    var y = (_player.Position.Y/32) + j;
+                    var y = (_player.Position.Y/TILE_HEIGHT) + j;
                     if (y >= HEIGHT)
                         continue;
-                    _spriteBatch.Draw(_map[x,y].Texture, new Vector2((i+10)*32, (j+10)*32));
+                    _spriteBatch.Draw(_map[x,y].Texture, new Vector2((i+10)*TILE_WIDTH, (j+10)*TILE_HEIGHT));
                     if(_map[x,y].EntityTexture != null)
-                        _spriteBatch.Draw(_map[x,y].EntityTexture, new Vector2((i+10)*32,(j+10)*32));
+                        _spriteBatch.Draw(_map[x,y].EntityTexture, new Vector2((i+10)*TILE_WIDTH,(j+10)*TILE_HEIGHT));
                 }
             }
 
@@ -286,10 +285,10 @@ namespace RogueLike
             {
                 int[] mov = enemy.Value.EnemeKi.Decide(_map, enemy.Value, enemy.Key, _player);
                 _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture = null;
-                //enemy.Value.Position.X += mov[0];
-                //enemy.Value.Position.Y += mov[1];
-                enemy.Value.Position.X += 0; // debug
-                enemy.Value.Position.Y += 0; // debug
+                enemy.Value.Position.X += mov[0];
+                enemy.Value.Position.Y += mov[1];
+                //enemy.Value.Position.X += 0; // debug
+                //enemy.Value.Position.Y += 0; // debug
                 _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityTexture = enemy.Value.Texture;
                 _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityName =
                     enemy.Key;
@@ -314,15 +313,15 @@ namespace RogueLike
                 return false;
             Console.WriteLine("Attack");
 
-            Enemy target = GetEnemy(virtPos);
+            var target = GetEnemy(virtPos);
 
-            _player.Health -= target.Attack;
-            target.Health -= _player.Attack;
+            _player.Health -= target.Value.Attack;
+            target.Value.Health -= _player.Attack;
 
             if (IsPlayerDead())
                 Die();
-            if (target.Health > 0) return false;
-            KillEnemey("dwarf");
+            if (target.Value.Health > 0) return false;
+            KillEnemey(target.Key);
             return true;
         }
 
@@ -366,11 +365,11 @@ namespace RogueLike
             return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])) select enemy.Value).FirstOrDefault();
         }
 
-        Enemy GetEnemy(int[] virtPos)
+        KeyValuePair<string, Enemy> GetEnemy(int[] virtPos)
         {
             virtPos[0] *= TILE_WIDTH;
             virtPos[1] *= TILE_HEIGHT;
-            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])) select enemy.Value).FirstOrDefault();
+            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])) select enemy).FirstOrDefault();
         }
 
         bool IsPlayerDead()
