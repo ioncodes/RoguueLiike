@@ -226,33 +226,33 @@ namespace RogueLike
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
 
-            for (int i = 0; i < FOV; i++)
+            for (int i = -10; i < FOV/2; i++)
             {
                 var x = (_player.Position.X/32) + i;
                 if (x >= WIDTH)
                     continue;
-                for (int j = 0; j < FOV; j++)
+                for (int j = -10; j < FOV/2; j++)
                 {
                     var y = (_player.Position.Y/32) + j;
                     if (y >= HEIGHT)
                         continue;
-                    _spriteBatch.Draw(_map[x,y].Texture, new Vector2(i*32, j*32));
+                    _spriteBatch.Draw(_map[x,y].Texture, new Vector2((i+10)*32, (j+10)*32));
                     if(_map[x,y].EntityTexture != null)
-                        _spriteBatch.Draw(_map[x,y].EntityTexture, new Vector2(i*32,j*32));
+                        _spriteBatch.Draw(_map[x,y].EntityTexture, new Vector2((i+10)*32,(j+10)*32));
                 }
             }
 
             //_spriteBatch.Draw(_player.Texture, new Vector2(_player.Position.X, _player.Position.Y));
             DrawHealthBar(_player.Health, _player.MaxHealth, new Vector2(_player.Position.X, _player.Position.Y));
 
-            foreach (var enemy in _enemies)
-            {
-                Vector2 pos = new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y);
-                _spriteBatch.Draw(enemy.Value.Texture, pos);
-                int maxHealth = enemy.Value.MaxHealth;
-                int health = enemy.Value.Health;
-                DrawHealthBar(health, maxHealth, pos);
-            }
+            //foreach (var enemy in _enemies)
+            //{
+            //    Vector2 pos = new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y);
+            //    _spriteBatch.Draw(enemy.Value.Texture, pos);
+            //    int maxHealth = enemy.Value.MaxHealth;
+            //    int health = enemy.Value.Health;
+            //    DrawHealthBar(health, maxHealth, pos);
+            //}
 
             _spriteBatch.End();
 
