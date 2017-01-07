@@ -13,6 +13,7 @@ namespace RogueLike
         public Texture2D Texture { get; set; }
         public Position Position { get; set; } = new Position(64,64);
         public int Health { get; set; } = 20;
+        public int MaxHealth { get; set; } = 20;
         public int Attack { get; set; } = 10;
         public int Shield { get; set; } = 0;
         public int XP { get; set; } = 0;
