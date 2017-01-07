@@ -266,43 +266,29 @@ namespace RogueLike
             int[] virtPos = GetVirtualPostition(x, y);
 
             bool isValid = _map[virtPos[0], virtPos[1]].Texture.Name != "wall/vines0";
-            if (isValid == false) return false;
-            foreach (var enemy in _enemies)
-            {
-                if (IsCovering(enemy.Value.Position, new Position(virtPos[0] * TILE_WIDTH, virtPos[1] * TILE_HEIGHT)))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return isValid && _enemies.All(enemy => !IsCovering(enemy.Value.Position, new Position(virtPos[0]*TILE_WIDTH, virtPos[1]*TILE_HEIGHT)));
         }
 
         bool Attack(int x, int y)
         {
             int[] virtPos = GetVirtualPostition(x, y);
-            foreach (var enemy in _enemies)
-            {
-                if (IsCovering(enemy.Value.Position, new Position(virtPos[0] * TILE_WIDTH, virtPos[1] * TILE_HEIGHT)))
-                {
-                    Console.WriteLine("Attack");
+            if (
+                !_enemies.Any(
+                    enemy =>
+                            IsCovering(enemy.Value.Position, new Position(virtPos[0]*TILE_WIDTH, virtPos[1]*TILE_HEIGHT))))
+                return false;
+            Console.WriteLine("Attack");
 
-                    Enemy target = GetEnemy(virtPos);
+            Enemy target = GetEnemy(virtPos);
 
-                    _player.Health -= target.Attack;
-                    target.Health -= _player.Attack;
+            _player.Health -= target.Attack;
+            target.Health -= _player.Attack;
 
-                    if (IsPlayerDead())
-                        Die();
-                    if (target.Health <= 0)
-                    {
-                        KillEnemey("dwarf");
-                        return true;
-                    }
-                    return false;
-                }
-            }
-            return false;
+            if (IsPlayerDead())
+                Die();
+            if (target.Health > 0) return false;
+            KillEnemey("dwarf");
+            return true;
         }
 
         bool IsCovering(Position p1, Position p2)
@@ -342,30 +328,14 @@ namespace RogueLike
             virtPos[0] *= TILE_WIDTH;
             virtPos[1] *= TILE_HEIGHT;
 
-            foreach (var enemy in _enemies)
-            {
-                if (IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])))
-                {
-                    return enemy.Value;
-                }
-            }
-
-            return null;
+            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])) select enemy.Value).FirstOrDefault();
         }
 
         Enemy GetEnemy(int[] virtPos)
         {
             virtPos[0] *= TILE_WIDTH;
             virtPos[1] *= TILE_HEIGHT;
-            foreach (var enemy in _enemies)
-            {
-                if (IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])))
-                {
-                    return enemy.Value;
-                }
-            }
-
-            return null;
+            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])) select enemy.Value).FirstOrDefault();
         }
 
         bool IsPlayerDead()
@@ -399,12 +369,18 @@ namespace RogueLike
             if (ii != null)
             {
                 // Update Player Stats with Item Stats
-                if(ii.ItemType == ItemType.Weapon)
-                    _player.Attack += ii.Damage;
-                else if (ii.ItemType == ItemType.HealthSlot)
-                    _player.MaxHealth += ii.Health;
-                else if (ii.ItemType == ItemType.Armor)
-                    _player.Shield += ii.Shield;
+                switch (ii.ItemType)
+                {
+                    case ItemType.Weapon:
+                        _player.Attack += ii.Damage;
+                        break;
+                    case ItemType.HealthSlot:
+                        _player.MaxHealth += ii.Health;
+                        break;
+                    case ItemType.Armor:
+                        _player.Shield += ii.Shield;
+                        break;
+                }
             }
             _player.Inventory.Amount = _player.Inventory.Items.Count;
             if (_player.XP >= _player.Level.XP)
