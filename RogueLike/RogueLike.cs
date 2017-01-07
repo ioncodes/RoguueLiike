@@ -168,8 +168,12 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(-1, 0))
                 {
-                    if(Attack(-1, 0))
+                    if (Attack(-1, 0))
+                    {
                         _player.Position.X -= TILE_WIDTH;
+                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
+                        _map[(_player.Position.X / TILE_WIDTH) + 1, _player.Position.Y / TILE_HEIGHT].EntityTexture = null;
+                    }
                 }
                 MoveEnemies();
             }
@@ -183,8 +187,12 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(1, 0))
                 {
-                    if(Attack(1, 0))
+                    if (Attack(1, 0))
+                    {
                         _player.Position.X += TILE_WIDTH;
+                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
+                        _map[(_player.Position.X / TILE_WIDTH) - 1, _player.Position.Y / TILE_HEIGHT].EntityTexture = null;
+                    }
                 }
                 MoveEnemies();
             }
@@ -198,8 +206,12 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(0, 1))
                 {
-                    if(Attack(0, 1))
+                    if (Attack(0, 1))
+                    {
                         _player.Position.Y += TILE_HEIGHT;
+                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
+                        _map[(_player.Position.X / TILE_WIDTH), (_player.Position.Y / TILE_HEIGHT) - 1].EntityTexture = null;
+                    }
                 }
                 MoveEnemies();
             }
@@ -213,8 +225,12 @@ namespace RogueLike
                 }
                 else if (IsEnemyNext(0, -1))
                 {
-                    if(Attack(0, -1))
+                    if (Attack(0, -1))
+                    {
                         _player.Position.Y -= TILE_HEIGHT;
+                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
+                        _map[(_player.Position.X / TILE_WIDTH), (_player.Position.Y / TILE_HEIGHT) + 1].EntityTexture = null;
+                    }
                 }
                 MoveEnemies();
             }
@@ -270,8 +286,10 @@ namespace RogueLike
             {
                 int[] mov = enemy.Value.EnemeKi.Decide(_map, enemy.Value, enemy.Key, _player);
                 _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture = null;
-                enemy.Value.Position.X += mov[0];
-                enemy.Value.Position.Y += mov[1];
+                //enemy.Value.Position.X += mov[0];
+                //enemy.Value.Position.Y += mov[1];
+                enemy.Value.Position.X += 0; // debug
+                enemy.Value.Position.Y += 0; // debug
                 _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityTexture = enemy.Value.Texture;
                 _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityName =
                     enemy.Key;
