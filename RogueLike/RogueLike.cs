@@ -103,6 +103,14 @@ namespace RogueLike
                 _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityName =
                     enemy.Key;
             }
+
+
+            // Load Healthbars
+            DamageDescriber.AlmostDead = Content.Load<Texture2D>("health/almost");
+            DamageDescriber.SeverelyDamaged = Content.Load<Texture2D>("health/severely");
+            DamageDescriber.HeavilyDamaged = Content.Load<Texture2D>("health/heavily");
+            DamageDescriber.ModeratelyDamaged = Content.Load<Texture2D>("health/moderately");
+            DamageDescriber.LightlyDamaged = Content.Load<Texture2D>("health/lightly");
         }
 
         /// <summary>
@@ -206,29 +214,33 @@ namespace RogueLike
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-                for (int i = 0; i < WIDTH; i++)
+            for (int i = 0; i < WIDTH; i++)
+            {
+                for (int j = 0; j < HEIGHT; j++)
                 {
-                    for (int j = 0; j < HEIGHT; j++)
+                    if (i == 0 || j == 0 || j == HEIGHT - 1 || i == WIDTH - 1)
                     {
-                        if (i == 0 || j == 0 || j == HEIGHT - 1 || i == WIDTH - 1)
-                        {
-                            _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "wall").Value,
-                                new Vector2(i*TILE_WIDTH, j*TILE_HEIGHT));
-                        }
-                        else
-                        {
-                            _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "floor").Value,
-                                new Vector2(i*TILE_WIDTH, j*TILE_HEIGHT));
-                        }
+                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "wall").Value,
+                            new Vector2(i*TILE_WIDTH, j*TILE_HEIGHT));
+                    }
+                    else
+                    {
+                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "floor").Value,
+                            new Vector2(i*TILE_WIDTH, j*TILE_HEIGHT));
                     }
                 }
+            }
 
             _spriteBatch.Draw(_player.Texture, new Vector2(_player.Position.X, _player.Position.Y));
+            DrawHealthBar(_player.Health, _player.MaxHealth, new Vector2(_player.Position.X, _player.Position.Y));
 
             foreach (var enemy in _enemies)
             {
-                _spriteBatch.Draw(enemy.Value.Texture, new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y));
-                //enemy.Value.Position.X, enemy.Value.Position.Y
+                Vector2 pos = new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y);
+                _spriteBatch.Draw(enemy.Value.Texture, pos);
+                int maxHealth = enemy.Value.MaxHealth;
+                int health = enemy.Value.Health;
+                DrawHealthBar(health, maxHealth, pos);
             }
 
             _spriteBatch.End();
@@ -416,6 +428,20 @@ namespace RogueLike
             _player.Health = _player.MaxHealth;
             _player.Shield -= origShield;
             _player.Shield += _player.Level.Shield;
+        }
+
+        void DrawHealthBar(int health, int maxHealth, Vector2 pos)
+        {
+            if (health <= maxHealth / 5)
+                _spriteBatch.Draw(DamageDescriber.AlmostDead, pos);
+            else if (health <= maxHealth / 4)
+                _spriteBatch.Draw(DamageDescriber.SeverelyDamaged, pos);
+            else if (health <= maxHealth / 3)
+                _spriteBatch.Draw(DamageDescriber.HeavilyDamaged, pos);
+            else if (health <= maxHealth / 2)
+                _spriteBatch.Draw(DamageDescriber.ModeratelyDamaged, pos);
+            else if (health < maxHealth)
+                _spriteBatch.Draw(DamageDescriber.LightlyDamaged, pos);
         }
     }
 }
