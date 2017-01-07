@@ -80,6 +80,8 @@ namespace RogueLike
                 randomMap = mpbuild.map;
             }
 
+            bool playerPosSet = false;
+
             for (int i = 0; i < WIDTH; i++)
             {
                 for (int j = 0; j < HEIGHT; j++)
@@ -90,10 +92,15 @@ namespace RogueLike
                         {
                             Texture = _textures.FirstOrDefault(t => t.Key == "floor").Value
                         };
-                        _player.Position = new Position(i*TILE_WIDTH,j*TILE_HEIGHT);
-                        if (r.Next(0,2) == 1)
+                        if (!playerPosSet && i > 50 && j > 50)
                         {
-                            _enemies.Add("dwarf" + i + j, new Enemy()
+                            _player.Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT);
+                            playerPosSet = true;
+                            continue;
+                        }
+                        if (r.Next(0,3) == 2 && _map[i,j].EntityTexture == null)
+                        {
+                            _enemies.Add("dwarf"+ Guid.NewGuid().ToString().Substring(0,10), new Enemy()
                             {
                                 Texture = Content.Load<Texture2D>("enemy/dwarf"),
                                 Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT),

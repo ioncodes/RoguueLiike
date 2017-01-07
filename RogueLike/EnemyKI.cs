@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,7 +38,15 @@ namespace RogueLike
 
         private int[] GetPaths(MapTile[,] map, Enemy enemy, string name, Player player)
         {
-            var pos = CoordinatesOf(map, enemy, name);
+            //var pos = CoordinatesOf(map, enemy, name);
+            Tuple<int, int> pos = Tuple.Create(enemy.Position.X/32, enemy.Position.Y/32);
+            int a = pos.Item1;
+            int b = pos.Item2;
+            if (pos.Item1 >= 149)
+                a = 148;
+            if (pos.Item2 >= 149)
+                b = 148;
+            pos = Tuple.Create(a, b);
             int[] paths = {1,-1,1,-1};
             if (map[pos.Item1 + 1, pos.Item2].Texture.Name == "wall/vines0" || map[pos.Item1 + 1, pos.Item2].EntityTexture == player.Texture) // +x
                 paths[0] = 0;
