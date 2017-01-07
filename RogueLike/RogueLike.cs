@@ -46,7 +46,6 @@ namespace RogueLike
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             _graphics.PreferredBackBufferWidth = WIDTH*TILE_WIDTH;
             _graphics.PreferredBackBufferHeight = HEIGHT*TILE_HEIGHT;
             _graphics.ApplyChanges();
