@@ -48,13 +48,13 @@ namespace RogueLike
                 b = 148;
             pos = Tuple.Create(a, b);
             int[] paths = {1,-1,1,-1};
-            if (map[pos.Item1 + 1, pos.Item2].Texture.Name == "wall/vines0" || map[pos.Item1 + 1, pos.Item2].EntityTexture == player.Texture) // +x
+            if (map[pos.Item1 + 1, pos.Item2].Texture.Name == "wall/vines0" || map[pos.Item1 + 1, pos.Item2].EntityTexture?.Name == "enemy/dwarf" || map[pos.Item1 + 1, pos.Item2].EntityTexture == player.Texture) // +x
                 paths[0] = 0;
-            if (map[pos.Item1 - 1, pos.Item2].Texture.Name == "wall/vines0" || map[pos.Item1 - 1, pos.Item2].EntityTexture == player.Texture) // -x
+            if (map[pos.Item1 - 1, pos.Item2].Texture.Name == "wall/vines0" || map[pos.Item1 - 1, pos.Item2].EntityTexture?.Name == "enemy/dwarf" || map[pos.Item1 - 1, pos.Item2].EntityTexture == player.Texture) // -x
                 paths[1] = 0;
-            if (map[pos.Item1, pos.Item2+1].Texture.Name == "wall/vines0" || map[pos.Item1, pos.Item2 + 1].EntityTexture == player.Texture) // +y
+            if (map[pos.Item1, pos.Item2+1].Texture.Name == "wall/vines0" || map[pos.Item1, pos.Item2+1].EntityTexture?.Name == "enemy/dwarf" || map[pos.Item1, pos.Item2 + 1].EntityTexture == player.Texture) // +y
                 paths[2] = 0;
-            if (map[pos.Item1, pos.Item2-1].Texture.Name == "wall/vines0" || map[pos.Item1, pos.Item2 - 1].EntityTexture == player.Texture) // -y
+            if (map[pos.Item1, pos.Item2-1].Texture.Name == "wall/vines0" || map[pos.Item1, pos.Item2-1].EntityTexture?.Name == "enemy/dwarf" || map[pos.Item1, pos.Item2 - 1].EntityTexture == player.Texture) // -y
                 paths[3] = 0;
             return paths;
         }

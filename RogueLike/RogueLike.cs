@@ -27,7 +27,8 @@ namespace RogueLike
         private const int HEIGHT = 150;
         private const int FOV = 20;
 
-        private const int ENEMY_AMOUNT = 200;
+        private const int ENEMY_AMOUNT = 50;
+        private int enemyCounter = 0;
         Random r = new Random();
 
         //Texture2D[,] _map = new Texture2D[WIDTH,HEIGHT];
@@ -98,7 +99,7 @@ namespace RogueLike
                             playerPosSet = true;
                             continue;
                         }
-                        if (r.Next(0,3) == 2 && _map[i,j].EntityTexture == null)
+                        if (r.Next(0,3) == 2 && _map[i,j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT)
                         {
                             _enemies.Add("dwarf"+ Guid.NewGuid().ToString().Substring(0,10), new Enemy()
                             {
@@ -106,6 +107,7 @@ namespace RogueLike
                                 Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT),
                                 XPReward = 50
                             });
+                            enemyCounter++;
                         }
                     }
                     else
@@ -258,9 +260,13 @@ namespace RogueLike
                 var x = (_player.Position.X/TILE_WIDTH) + i;
                 if (x >= WIDTH)
                     continue;
+                if(x < 0)
+                    continue;
                 for (int j = -10; j < FOV/2; j++)
                 {
                     var y = (_player.Position.Y/TILE_HEIGHT) + j;
+                    if(y < 0)
+                        continue;
                     if (y >= HEIGHT)
                         continue;
                     _spriteBatch.Draw(_map[x,y].Texture, new Vector2((i+10)*TILE_WIDTH, (j+10)*TILE_HEIGHT));
@@ -392,7 +398,7 @@ namespace RogueLike
 
         void KillEnemey(string name)
         {
-            Drop(_enemies[name].XPReward);
+            Drop(_enemies[name].XPReward); // enemy list is fast empty
             _enemies.Remove(name);
         }
 
@@ -434,6 +440,7 @@ namespace RogueLike
 
         void LevelUp()
         {
+            if(_player.Level.Level == 1) return; // max level here
             int lvl = _player.Level.Level;
             int origDamage = _player.Level.Damage;
             int origShield = _player.Level.Shield;
