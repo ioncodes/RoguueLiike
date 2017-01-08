@@ -398,6 +398,10 @@ namespace RogueLike
                             _spriteBatch.Draw(_map[x, y].EntityTexture, pos);
                             if (_map[x, y].EntityTexture == _player.Texture)
                             {
+                                foreach (var item in _player.Equipment.EquipmentSet)
+                                {
+                                    _spriteBatch.Draw(item, pos);
+                                }
                                 DrawHealthBar(_player.Health, _player.MaxHealth, pos);
                             }
                             else
@@ -587,6 +591,7 @@ namespace RogueLike
                     }
                     break;
             }
+            _player.Equipment.Update();
             UpdatePlayerStats(drop.Value);
         }
 
