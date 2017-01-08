@@ -10,7 +10,7 @@ namespace RogueLike
     class BootsMiddleBrown3 : InventoryItem
     {
         public override string Name { get; } = "Boots Middle Brown #3";
-        public override ItemType ItemType { get; } = ItemType.Armor;
+        public override ItemType ItemType { get; } = ItemType.Boots;
         public override int Damage { get; } = 0;
         public override int Health { get; } = 0;
         public override int Shield { get; } = 1;

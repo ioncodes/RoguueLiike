@@ -554,19 +554,38 @@ namespace RogueLike
             // drop item
             var drop = _items.ElementAt(r.Next(_items.Count));
             _player.Inventory.Items.Add(drop.Value);
-            if (drop.Value.ItemType == ItemType.Weapon)
+            switch (drop.Value.ItemType)
             {
-                if (_player.Equipment.Weapon == null)
-                {
-                    _player.Equipment.Weapon = _thumbWeapons[drop.Key];
-                }
-            }
-            else if (drop.Value.ItemType == ItemType.Shield)
-            {
-                if (_player.Equipment.Shield == null)
-                {
-                    _player.Equipment.Shield = _thumbShields[drop.Key];
-                }
+                case ItemType.Weapon:
+                    if (_player.Equipment.Weapon == null)
+                    {
+                        _player.Equipment.Weapon = _thumbWeapons[drop.Key];
+                    }
+                    break;
+                case ItemType.Shield:
+                    if (_player.Equipment.Shield == null)
+                    {
+                        _player.Equipment.Shield = _thumbShields[drop.Key];
+                    }
+                    break;
+                case ItemType.Boots:
+                    if (_player.Equipment.Boots == null)
+                    {
+                        _player.Equipment.Boots = _thumbBoots[drop.Key];
+                    }
+                    break;
+                case ItemType.Helmet:
+                    if (_player.Equipment.Helmet == null)
+                    {
+                        _player.Equipment.Helmet = _thumbHelmets[drop.Key];
+                    }
+                    break;
+                case ItemType.Mail:
+                    if (_player.Equipment.Mail == null)
+                    {
+                        _player.Equipment.Mail = _thumbMails[drop.Key];
+                    }
+                    break;
             }
             UpdatePlayerStats(drop.Value);
         }
@@ -584,7 +603,8 @@ namespace RogueLike
                     case ItemType.HealthSlot:
                         _player.MaxHealth += ii.Health;
                         break;
-                    case ItemType.Armor:
+                    case ItemType.Shield: case ItemType.Helmet:
+                    case ItemType.Boots: case ItemType.Mail:
                         _player.Shield += ii.Shield;
                         break;
                 }
@@ -745,6 +765,7 @@ namespace RogueLike
             {
                 if (i == 3)
                 {
+                    yborder -= TILE_HEIGHT / 2;
                     _spriteBatch.Draw(_textures["slot"], new Vector2(xborder - (TILE_WIDTH/2) - TILE_WIDTH/4, yborder));
 
                     // draw weapon
@@ -753,6 +774,7 @@ namespace RogueLike
                 }
                 else if (i == 4)
                 {
+                    yborder -= TILE_HEIGHT / 2;
                     _spriteBatch.Draw(_textures["slot"], new Vector2(xborder + (TILE_WIDTH/2) + TILE_WIDTH/4, yborder));
 
                     // draw shield
@@ -762,27 +784,30 @@ namespace RogueLike
                 else
                 {
                     _spriteBatch.Draw(_textures["slot"], new Vector2(xborder, yborder));
-                    yborder += TILE_HEIGHT*2;
                 }
 
                 if (i == 0)
                 {
-                    _spriteBatch.Draw(_textures["slot"], new Vector2(xborder + (TILE_WIDTH / 2) + TILE_WIDTH / 4, yborder));
-
                     // draw helmet
-                    if (_player.Equipment.Shield != null)
-                        _spriteBatch.Draw(_player.Equipment.Shield, new Vector2(xborder + (TILE_WIDTH / 2) + TILE_WIDTH / 4, yborder));
+                    if (_player.Equipment.Helmet != null)
+                        _spriteBatch.Draw(_player.Equipment.Helmet, new Vector2(xborder, yborder));
                 }
 
                 if (i == 1)
                 {
                     // draw mail
+                    if (_player.Equipment.Mail != null)
+                        _spriteBatch.Draw(_player.Equipment.Mail, new Vector2(xborder, yborder));
                 }
 
                 if (i == 2)
                 {
                     // draw boots
+                    if (_player.Equipment.Boots != null)
+                        _spriteBatch.Draw(_player.Equipment.Boots, new Vector2(xborder, yborder));
                 }
+
+                yborder += TILE_HEIGHT * 2;
             }
         }
     }

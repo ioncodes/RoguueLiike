@@ -20,7 +20,9 @@ namespace RogueLike
     public enum ItemType
     {
         Weapon,
-        Armor,
+        Helmet,
+        Mail,
+        Boots,
         HealthSlot,
         Shield
     }
