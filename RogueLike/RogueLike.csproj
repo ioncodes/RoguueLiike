@@ -46,6 +46,13 @@
     <Compile Include="EnemyKI.cs" />
     <Compile Include="Equipment.cs" />
     <Compile Include="InternalSettings.cs" />
+    <Compile Include="Inventory\BootsMiddleBrown3.cs" />
+    <Compile Include="Inventory\IronHelmet3.cs" />
+    <Compile Include="Inventory\IronHelmet2.cs" />
+    <Compile Include="Inventory\IronHelmet1.cs" />
+    <Compile Include="Inventory\LeatherArmour3.cs" />
+    <Compile Include="Inventory\LeatherArmour2.cs" />
+    <Compile Include="Inventory\LeatherArmour1.cs" />
     <Compile Include="Inventory\KnightShield.cs" />
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Inventory\InventoryItem.cs" />

@@ -41,8 +41,14 @@ namespace RogueLike
         readonly Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _thumbWeapons = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _thumbShields = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _thumbHelmets = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _thumbMails = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _thumbBoots = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _weapons = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _shields = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _boots = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _mails = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _helmets = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, InventoryItem> _items = new Dictionary<string, InventoryItem>();
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
         List<Enemy> _enemyTypes = new List<Enemy>();
@@ -97,7 +103,20 @@ namespace RogueLike
             _thumbWeapons.Add("greatsword", Content.Load<Texture2D>("weapons/thumbnails/greatsword1"));
 
             /* Load thumbnails for shields */
-            _thumbWeapons.Add("shield_knight_gray", Content.Load<Texture2D>("shields/thumbnails/large_shield1"));
+            _thumbShields.Add("shield_knight_gray", Content.Load<Texture2D>("shields/thumbnails/large_shield1"));
+
+            /* Load thumbnails for mails */
+            _thumbMails.Add("leather_armour", Content.Load<Texture2D>("armour/thumbnails/mail/leather_armour1"));
+            _thumbMails.Add("leather_armour2", Content.Load<Texture2D>("armour/thumbnails/mail/leather_armour2"));
+            _thumbMails.Add("leather_armour3", Content.Load<Texture2D>("armour/thumbnails/mail/leather_armour3"));
+
+            /* Load thumbnails for boots */
+            _thumbBoots.Add("boot_middle_brown3", Content.Load<Texture2D>("armour/thumbnails/boots/boots1_brown"));
+
+            /* Load thumbnails for helmets */
+            _thumbHelmets.Add("iron_helmet1", Content.Load<Texture2D>("armour/thumbnails/helmet/helmet3"));
+            _thumbHelmets.Add("iron_helmet2", Content.Load<Texture2D>("armour/thumbnails/helmet/helmet3"));
+            _thumbHelmets.Add("iron_helmet3", Content.Load<Texture2D>("armour/thumbnails/helmet/helmet3"));
 
             /* Load weapons */
             _weapons.Add("greatsword", Content.Load<Texture2D>("weapons/skins/great_sword"));
@@ -105,9 +124,30 @@ namespace RogueLike
             /* Load shields */
             _shields.Add("shield_knight_gray", Content.Load<Texture2D>("shields/skins/shield_knight_gray"));
 
+            /* Load helmets */
+            _helmets.Add("iron_helmet1", Content.Load<Texture2D>("armour/skins/helmet/iron1"));
+            _helmets.Add("iron_helmet2", Content.Load<Texture2D>("armour/skins/helmet/iron2"));
+            _helmets.Add("iron_helmet3", Content.Load<Texture2D>("armour/skins/helmet/iron3"));
+
+            /* Load boots */
+            _boots.Add("boot_middle_brown3", Content.Load<Texture2D>("armour/skins/boots/middle_brown3"));
+
+            /* Load mails */
+            _mails.Add("leather_armour", Content.Load<Texture2D>("armour/skins/mail/leather_armour"));
+            _mails.Add("leather_armour2", Content.Load<Texture2D>("armour/skins/mail/leather_armour2"));
+            _mails.Add("leather_armour3", Content.Load<Texture2D>("armour/skins/mail/leather_armour3"));
+
+
             /* Load items */
             _items.Add("greatsword", new GreatSword());
             _items.Add("shield_knight_gray", new KnightShield());
+            _items.Add("leather_armour", new LeatherArmour1());
+            _items.Add("leather_armour2", new LeatherArmour2());
+            _items.Add("leather_armour3", new LeatherArmour3());
+            _items.Add("iron_helmet1", new IronHelmet1());
+            _items.Add("iron_helmet2", new IronHelmet2());
+            _items.Add("iron_helmet3", new IronHelmet3());
+            _items.Add("boot_middle_brown3", new BootsMiddleBrown3());
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
@@ -525,7 +565,7 @@ namespace RogueLike
             {
                 if (_player.Equipment.Shield == null)
                 {
-                    _player.Equipment.Shield = _thumbWeapons[drop.Key];
+                    _player.Equipment.Shield = _thumbShields[drop.Key];
                 }
             }
             UpdatePlayerStats(drop.Value);
@@ -727,7 +767,11 @@ namespace RogueLike
 
                 if (i == 0)
                 {
+                    _spriteBatch.Draw(_textures["slot"], new Vector2(xborder + (TILE_WIDTH / 2) + TILE_WIDTH / 4, yborder));
+
                     // draw helmet
+                    if (_player.Equipment.Shield != null)
+                        _spriteBatch.Draw(_player.Equipment.Shield, new Vector2(xborder + (TILE_WIDTH / 2) + TILE_WIDTH / 4, yborder));
                 }
 
                 if (i == 1)
