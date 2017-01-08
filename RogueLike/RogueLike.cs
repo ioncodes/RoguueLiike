@@ -398,7 +398,7 @@ namespace RogueLike
                             _spriteBatch.Draw(_map[x, y].EntityTexture, pos);
                             if (_map[x, y].EntityTexture == _player.Texture)
                             {
-                                foreach (var item in _player.Equipment.EquipmentSet)
+                                foreach (var item in _player.Equipment.Skins.EquipmentSet)
                                 {
                                     _spriteBatch.Draw(item, pos);
                                 }
@@ -561,37 +561,43 @@ namespace RogueLike
             switch (drop.Value.ItemType)
             {
                 case ItemType.Weapon:
-                    if (_player.Equipment.Weapon == null)
+                    if (_player.Equipment.Thumbnails.Weapon == null)
                     {
-                        _player.Equipment.Weapon = _thumbWeapons[drop.Key];
+                        _player.Equipment.Thumbnails.Weapon = _thumbWeapons[drop.Key];
+                        _player.Equipment.Skins.Weapon = _weapons[drop.Key];
                     }
                     break;
                 case ItemType.Shield:
-                    if (_player.Equipment.Shield == null)
+                    if (_player.Equipment.Thumbnails.Shield == null)
                     {
-                        _player.Equipment.Shield = _thumbShields[drop.Key];
+                        _player.Equipment.Thumbnails.Shield = _thumbShields[drop.Key];
+                        _player.Equipment.Skins.Shield = _shields[drop.Key];
                     }
                     break;
                 case ItemType.Boots:
-                    if (_player.Equipment.Boots == null)
+                    if (_player.Equipment.Thumbnails.Boots == null)
                     {
-                        _player.Equipment.Boots = _thumbBoots[drop.Key];
+                        _player.Equipment.Thumbnails.Boots = _thumbBoots[drop.Key];
+                        _player.Equipment.Skins.Boots = _boots[drop.Key];
                     }
                     break;
                 case ItemType.Helmet:
-                    if (_player.Equipment.Helmet == null)
+                    if (_player.Equipment.Thumbnails.Helmet == null)
                     {
-                        _player.Equipment.Helmet = _thumbHelmets[drop.Key];
+                        _player.Equipment.Thumbnails.Helmet = _thumbHelmets[drop.Key];
+                        _player.Equipment.Skins.Helmet = _helmets[drop.Key];
                     }
                     break;
                 case ItemType.Mail:
-                    if (_player.Equipment.Mail == null)
+                    if (_player.Equipment.Thumbnails.Mail == null)
                     {
-                        _player.Equipment.Mail = _thumbMails[drop.Key];
+                        _player.Equipment.Thumbnails.Mail = _thumbMails[drop.Key];
+                        _player.Equipment.Skins.Mail = _mails[drop.Key];
                     }
                     break;
             }
-            _player.Equipment.Update();
+            _player.Equipment.Thumbnails.Update();
+            _player.Equipment.Skins.Update();
             UpdatePlayerStats(drop.Value);
         }
 
@@ -770,21 +776,20 @@ namespace RogueLike
             {
                 if (i == 3)
                 {
-                    yborder -= TILE_HEIGHT / 2;
                     _spriteBatch.Draw(_textures["slot"], new Vector2(xborder - (TILE_WIDTH/2) - TILE_WIDTH/4, yborder));
 
                     // draw weapon
-                    if(_player.Equipment.Weapon != null)
-                        _spriteBatch.Draw(_player.Equipment.Weapon, new Vector2(xborder - (TILE_WIDTH / 2) - TILE_WIDTH / 4, yborder));
+                    if(_player.Equipment.Thumbnails.Weapon != null)
+                        _spriteBatch.Draw(_player.Equipment.Thumbnails.Weapon, new Vector2(xborder - (TILE_WIDTH / 2) - TILE_WIDTH / 4, yborder));
                 }
                 else if (i == 4)
                 {
-                    yborder -= TILE_HEIGHT / 2;
+                    yborder -= 2*TILE_HEIGHT;
                     _spriteBatch.Draw(_textures["slot"], new Vector2(xborder + (TILE_WIDTH/2) + TILE_WIDTH/4, yborder));
 
                     // draw shield
-                    if (_player.Equipment.Shield != null)
-                        _spriteBatch.Draw(_player.Equipment.Shield, new Vector2(xborder + (TILE_WIDTH / 2) + TILE_WIDTH / 4, yborder));
+                    if (_player.Equipment.Thumbnails.Shield != null)
+                        _spriteBatch.Draw(_player.Equipment.Thumbnails.Shield, new Vector2(xborder + (TILE_WIDTH / 2) + TILE_WIDTH / 4, yborder));
                 }
                 else
                 {
@@ -794,22 +799,22 @@ namespace RogueLike
                 if (i == 0)
                 {
                     // draw helmet
-                    if (_player.Equipment.Helmet != null)
-                        _spriteBatch.Draw(_player.Equipment.Helmet, new Vector2(xborder, yborder));
+                    if (_player.Equipment.Thumbnails.Helmet != null)
+                        _spriteBatch.Draw(_player.Equipment.Thumbnails.Helmet, new Vector2(xborder, yborder));
                 }
 
                 if (i == 1)
                 {
                     // draw mail
-                    if (_player.Equipment.Mail != null)
-                        _spriteBatch.Draw(_player.Equipment.Mail, new Vector2(xborder, yborder));
+                    if (_player.Equipment.Thumbnails.Mail != null)
+                        _spriteBatch.Draw(_player.Equipment.Thumbnails.Mail, new Vector2(xborder, yborder));
                 }
 
                 if (i == 2)
                 {
                     // draw boots
-                    if (_player.Equipment.Boots != null)
-                        _spriteBatch.Draw(_player.Equipment.Boots, new Vector2(xborder, yborder));
+                    if (_player.Equipment.Thumbnails.Boots != null)
+                        _spriteBatch.Draw(_player.Equipment.Thumbnails.Boots, new Vector2(xborder, yborder));
                 }
 
                 yborder += TILE_HEIGHT * 2;
