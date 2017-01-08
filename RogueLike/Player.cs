@@ -19,5 +19,6 @@ namespace RogueLike
         public int XP { get; set; } = 0;
         public LevelInfo Level = new Level0();
         public Inventory Inventory { get; } = new Inventory();
+        public Equipment Equipment { get; } = new Equipment();
     }
 }

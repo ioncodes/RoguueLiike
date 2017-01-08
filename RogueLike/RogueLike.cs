@@ -28,17 +28,20 @@ namespace RogueLike
         private const int HEIGHT = 150;
         private const int FOV = 20;
         private const int PLAYER_FOV = 1; // 1 or 2 is best
+        private const int EQUIPMENT_WIDTH = 64;
 
         private const int ENEMY_AMOUNT = 150; // around 150 is a good number
         private const int ENEMY_RADIUS = 3;
         private int enemyCounter = 0;
         Random r = new Random();
 
-        //Texture2D[,] _map = new Texture2D[WIDTH,HEIGHT];
-        MapTile[,] _map = new MapTile[WIDTH,HEIGHT];
+        MapTile[,] _map = new MapTile[WIDTH, HEIGHT];
 
         private Player _player = new Player();
         readonly Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _thumbWeapons = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _weapons = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _shields = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
         List<Enemy> _enemyTypes = new List<Enemy>();
 
@@ -60,7 +63,7 @@ namespace RogueLike
         /// </summary>
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = FOV*TILE_WIDTH;
+            _graphics.PreferredBackBufferWidth = FOV*TILE_WIDTH + EQUIPMENT_WIDTH;
             _graphics.PreferredBackBufferHeight = FOV*TILE_HEIGHT;
             _graphics.ApplyChanges();
             base.Initialize();
@@ -76,16 +79,23 @@ namespace RogueLike
 
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             /* Load Map textures */
             _textures.Add("floor", Content.Load<Texture2D>("floor/vines0"));
             _textures.Add("wall", Content.Load<Texture2D>("wall/vines0"));
             _textures.Add("unseen", Content.Load<Texture2D>("floor/unseen"));
             _textures.Add("blood_red", Content.Load<Texture2D>("enemy/additions/blood_red"));
             _textures.Add("blood_green", Content.Load<Texture2D>("enemy/additions/blood_green"));
+            _textures.Add("slot", Content.Load<Texture2D>("player/equipment/slot"));
 
             /* Load internal settings */
             _internalSettings.Cursor.Texture = Content.Load<Texture2D>("user/cursor");
+
+            /* Load thumbnails for weapons */
+            _thumbWeapons.Add("greatsword1", Content.Load<Texture2D>("weapons/thumbnails/greatsword1"));
+
+            /* Load weapons */
+            _weapons.Add("greatsword", Content.Load<Texture2D>("weapons/skins/great_sword"));
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
@@ -93,7 +103,7 @@ namespace RogueLike
             {
                 MaxRooms = 20
             };
-            int[,] randomMap = new int[WIDTH,HEIGHT];
+            int[,] randomMap = new int[WIDTH, HEIGHT];
             if (mpbuild.Build_ConnectedStartRooms() == true)
             {
                 randomMap = mpbuild.map;
@@ -117,7 +127,8 @@ namespace RogueLike
                             playerPosSet = true;
                             continue;
                         }
-                        if (r.Next(0,8) == 1 && _map[i,j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT && !IsEnemyNearby(i,j)) // around 10 is a good number
+                        if (r.Next(0, 8) == 1 && _map[i, j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT &&
+                            !IsEnemyNearby(i, j)) // around 10 is a good number
                         {
                             int enemyRandSelector = r.Next(0, 10);
                             var kvp = new KeyValuePair<string, Enemy>();
@@ -125,23 +136,23 @@ namespace RogueLike
                             {
                                 //elf
                                 kvp = new KeyValuePair<string, Enemy>(
-                                "elf" + Guid.NewGuid().ToString().Substring(0, 10),
-                                new Dwarf()
-                                {
-                                    Texture = Content.Load<Texture2D>("enemy/elf"),
-                                    Position = new Position(i * TILE_WIDTH, j * TILE_HEIGHT)
-                                });
+                                    "elf" + Guid.NewGuid().ToString().Substring(0, 10),
+                                    new Dwarf()
+                                    {
+                                        Texture = Content.Load<Texture2D>("enemy/elf"),
+                                        Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT)
+                                    });
                             }
-                            else if(enemyRandSelector >= 7)
+                            else if (enemyRandSelector >= 7)
                             {
                                 //dwarf
                                 kvp = new KeyValuePair<string, Enemy>(
-                                "dwarf" + Guid.NewGuid().ToString().Substring(0, 10),
-                                new Dwarf()
-                                {
-                                    Texture = Content.Load<Texture2D>("enemy/dwarf"),
-                                    Position = new Position(i * TILE_WIDTH, j * TILE_HEIGHT)
-                                });
+                                    "dwarf" + Guid.NewGuid().ToString().Substring(0, 10),
+                                    new Dwarf()
+                                    {
+                                        Texture = Content.Load<Texture2D>("enemy/dwarf"),
+                                        Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT)
+                                    });
                             }
                             _map[i, j].EntityTexture = kvp.Value.Texture;
                             _map[i, j].EntityName = kvp.Key;
@@ -178,8 +189,10 @@ namespace RogueLike
         {
             _textures.Clear();
             _enemies.Clear();
-            _map = new MapTile[WIDTH,HEIGHT];
+            _map = new MapTile[WIDTH, HEIGHT];
             _player = new Player();
+            _weapons.Clear();
+            _shields.Clear();
             enemyCounter = 0;
             Content.Unload();
         }
@@ -193,6 +206,7 @@ namespace RogueLike
         {
             MouseState mouseState = Mouse.GetState();
             _internalSettings.Cursor.Position = new Vector2(mouseState.X, mouseState.Y);
+            Console.WriteLine(_internalSettings.Cursor.Position.ToString());
 
             if (_framesPassed > 5)
             {
@@ -207,16 +221,17 @@ namespace RogueLike
                 if (VerifyMovement(-1, 0))
                 {
                     _player.Position.X -= TILE_WIDTH;
-                    _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
-                    _map[(_player.Position.X / TILE_WIDTH)+1, _player.Position.Y / TILE_HEIGHT].EntityTexture = null;
+                    _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
+                    _map[(_player.Position.X/TILE_WIDTH) + 1, _player.Position.Y/TILE_HEIGHT].EntityTexture = null;
                 }
                 else if (IsEnemyNext(-1, 0))
                 {
                     if (Attack(-1, 0))
                     {
                         _player.Position.X -= TILE_WIDTH;
-                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
-                        _map[(_player.Position.X / TILE_WIDTH) + 1, _player.Position.Y / TILE_HEIGHT].EntityTexture = null;
+                        _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture =
+                            _player.Texture;
+                        _map[(_player.Position.X/TILE_WIDTH) + 1, _player.Position.Y/TILE_HEIGHT].EntityTexture = null;
                     }
                 }
                 MoveEnemies();
@@ -227,16 +242,17 @@ namespace RogueLike
                 if (VerifyMovement(1, 0))
                 {
                     _player.Position.X += TILE_WIDTH;
-                    _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
-                    _map[(_player.Position.X / TILE_WIDTH)-1, _player.Position.Y / TILE_HEIGHT].EntityTexture = null;
+                    _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
+                    _map[(_player.Position.X/TILE_WIDTH) - 1, _player.Position.Y/TILE_HEIGHT].EntityTexture = null;
                 }
                 else if (IsEnemyNext(1, 0))
                 {
                     if (Attack(1, 0))
                     {
                         _player.Position.X += TILE_WIDTH;
-                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
-                        _map[(_player.Position.X / TILE_WIDTH) - 1, _player.Position.Y / TILE_HEIGHT].EntityTexture = null;
+                        _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture =
+                            _player.Texture;
+                        _map[(_player.Position.X/TILE_WIDTH) - 1, _player.Position.Y/TILE_HEIGHT].EntityTexture = null;
                     }
                 }
                 MoveEnemies();
@@ -247,16 +263,17 @@ namespace RogueLike
                 if (VerifyMovement(0, 1))
                 {
                     _player.Position.Y += TILE_HEIGHT;
-                    _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
-                    _map[(_player.Position.X / TILE_WIDTH), (_player.Position.Y / TILE_HEIGHT) - 1].EntityTexture = null;
+                    _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
+                    _map[(_player.Position.X/TILE_WIDTH), (_player.Position.Y/TILE_HEIGHT) - 1].EntityTexture = null;
                 }
                 else if (IsEnemyNext(0, 1))
                 {
                     if (Attack(0, 1))
                     {
                         _player.Position.Y += TILE_HEIGHT;
-                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
-                        _map[(_player.Position.X / TILE_WIDTH), (_player.Position.Y / TILE_HEIGHT) - 1].EntityTexture = null;
+                        _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture =
+                            _player.Texture;
+                        _map[(_player.Position.X/TILE_WIDTH), (_player.Position.Y/TILE_HEIGHT) - 1].EntityTexture = null;
                     }
                 }
                 MoveEnemies();
@@ -267,7 +284,7 @@ namespace RogueLike
                 if (VerifyMovement(0, -1))
                 {
                     _player.Position.Y -= TILE_HEIGHT;
-                    _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
+                    _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
                     _map[(_player.Position.X/TILE_WIDTH), (_player.Position.Y/TILE_HEIGHT) + 1].EntityTexture = null;
                 }
                 else if (IsEnemyNext(0, -1))
@@ -275,8 +292,9 @@ namespace RogueLike
                     if (Attack(0, -1))
                     {
                         _player.Position.Y -= TILE_HEIGHT;
-                        _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].EntityTexture = _player.Texture;
-                        _map[(_player.Position.X / TILE_WIDTH), (_player.Position.Y / TILE_HEIGHT) + 1].EntityTexture = null;
+                        _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture =
+                            _player.Texture;
+                        _map[(_player.Position.X/TILE_WIDTH), (_player.Position.Y/TILE_HEIGHT) + 1].EntityTexture = null;
                     }
                 }
                 MoveEnemies();
@@ -292,7 +310,7 @@ namespace RogueLike
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
 
             for (int i = -10; i < FOV/2; i++)
@@ -300,12 +318,12 @@ namespace RogueLike
                 var x = (_player.Position.X/TILE_WIDTH) + i;
                 if (x >= WIDTH)
                     continue;
-                if(x < 0)
+                if (x < 0)
                     continue;
                 for (int j = -10; j < FOV/2; j++)
                 {
                     var y = (_player.Position.Y/TILE_HEIGHT) + j;
-                    if(y < 0)
+                    if (y < 0)
                         continue;
                     if (y >= HEIGHT)
                         continue;
@@ -339,12 +357,15 @@ namespace RogueLike
                     }
                     else
                     {
-                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "unseen").Value, new Vector2((i+10) * TILE_WIDTH, (j+10) * TILE_HEIGHT));
+                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "unseen").Value,
+                            new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT));
                     }
                 }
             }
 
             _spriteBatch.Draw(_internalSettings.Cursor.Texture, _internalSettings.Cursor.Position, Color.White);
+
+            DrawEquipment();
 
             _spriteBatch.End();
 
@@ -359,8 +380,9 @@ namespace RogueLike
                 _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture = null;
                 enemy.Value.Position.X += mov[0];
                 enemy.Value.Position.Y += mov[1];
-                _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityTexture = enemy.Value.Texture;
-                _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityName =
+                _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture =
+                    enemy.Value.Texture;
+                _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityName =
                     enemy.Key;
             }
         }
@@ -370,7 +392,11 @@ namespace RogueLike
             int[] virtPos = GetVirtualPostition(x, y);
 
             bool isValid = _map[virtPos[0], virtPos[1]].Texture.Name != "wall/vines0";
-            return isValid && _enemies.All(enemy => !IsCovering(enemy.Value.Position, new Position(virtPos[0]*TILE_WIDTH, virtPos[1]*TILE_HEIGHT)));
+            return isValid &&
+                   _enemies.All(
+                       enemy =>
+                           !IsCovering(enemy.Value.Position,
+                               new Position(virtPos[0]*TILE_WIDTH, virtPos[1]*TILE_HEIGHT)));
         }
 
         bool Attack(int x, int y)
@@ -408,7 +434,8 @@ namespace RogueLike
         bool IsEnemyNext(int x, int y)
         {
             int[] virtPos = GetVirtualPostition(x, y);
-            return _map[virtPos[0], virtPos[1]].EntityTexture != null && _map[virtPos[0], virtPos[1]].EntityTexture.Name.StartsWith("enemy/");
+            return _map[virtPos[0], virtPos[1]].EntityTexture != null &&
+                   _map[virtPos[0], virtPos[1]].EntityTexture.Name.StartsWith("enemy/");
         }
 
         int[] GetVirtualPostition(int x, int y)
@@ -417,13 +444,13 @@ namespace RogueLike
             int virtPosY = 0;
             if (x != 0)
             {
-                virtPosX = (_player.Position.X + (x * TILE_WIDTH)) / TILE_WIDTH;
-                virtPosY = _player.Position.Y / TILE_HEIGHT;
+                virtPosX = (_player.Position.X + (x*TILE_WIDTH))/TILE_WIDTH;
+                virtPosY = _player.Position.Y/TILE_HEIGHT;
             }
             else if (y != 0)
             {
-                virtPosX = _player.Position.X / TILE_WIDTH;
-                virtPosY = (_player.Position.Y + (y * TILE_HEIGHT)) / TILE_HEIGHT;
+                virtPosX = _player.Position.X/TILE_WIDTH;
+                virtPosY = (_player.Position.Y + (y*TILE_HEIGHT))/TILE_HEIGHT;
             }
 
             return new[] {virtPosX, virtPosY};
@@ -434,14 +461,19 @@ namespace RogueLike
             x *= TILE_WIDTH;
             y *= TILE_HEIGHT;
 
-            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(x, y)) select enemy.Value).FirstOrDefault();
+            return
+                (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(x, y)) select enemy.Value)
+                    .FirstOrDefault();
         }
 
         KeyValuePair<string, Enemy> GetEnemy(int[] virtPos)
         {
             virtPos[0] *= TILE_WIDTH;
             virtPos[1] *= TILE_HEIGHT;
-            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])) select enemy).FirstOrDefault();
+            return
+            (from enemy in _enemies
+                where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1]))
+                select enemy).FirstOrDefault();
         }
 
         bool IsPlayerDead()
@@ -458,7 +490,8 @@ namespace RogueLike
         void KillEnemey(string name)
         {
             Drop(_enemies[name].XPReward); // enemy list is fast empty
-            _map[_enemies[name].Position.X/TILE_WIDTH, _enemies[name].Position.Y / TILE_HEIGHT].AdditionalTextures.Add(_textures["blood_red"]);
+            _map[_enemies[name].Position.X/TILE_WIDTH, _enemies[name].Position.Y/TILE_HEIGHT].AdditionalTextures.Add(
+                _textures["blood_red"]);
             _enemies.Remove(name);
         }
 
@@ -467,8 +500,12 @@ namespace RogueLike
             // give xp
             _player.XP += xp;
             // drop item
-            _player.Inventory.Items.Add(new LargeSword());
-            UpdatePlayerStats(new LargeSword());
+            _player.Inventory.Items.Add(new GreatSword());
+            if (_player.Equipment.Weapon == null)
+            {
+                _player.Equipment.Weapon = _thumbWeapons["greatsword1"];
+            }
+            UpdatePlayerStats(new GreatSword());
         }
 
         void UpdatePlayerStats(InventoryItem ii = null)
@@ -500,11 +537,11 @@ namespace RogueLike
 
         void LevelUp()
         {
-            if(_player.Level.Level == 1) return; // max level here
+            if (_player.Level.Level == 1) return; // max level here
             int lvl = _player.Level.Level;
             int origDamage = _player.Level.Damage;
             int origShield = _player.Level.Shield;
-            _player.Level = (LevelInfo)Activator.CreateInstance(Type.GetType("RogueLike.Levels.Level" + (lvl + 1)));
+            _player.Level = (LevelInfo) Activator.CreateInstance(Type.GetType("RogueLike.Levels.Level" + (lvl + 1)));
             _player.Attack -= origDamage;
             _player.Attack += _player.Level.Damage;
             _player.MaxHealth += _player.Level.Health;
@@ -515,13 +552,13 @@ namespace RogueLike
 
         void DrawHealthBar(int health, int maxHealth, Vector2 pos)
         {
-            if (health <= maxHealth / 5)
+            if (health <= maxHealth/5)
                 _spriteBatch.Draw(DamageDescriber.AlmostDead, pos);
-            else if (health <= maxHealth / 4)
+            else if (health <= maxHealth/4)
                 _spriteBatch.Draw(DamageDescriber.SeverelyDamaged, pos);
-            else if (health <= maxHealth / 3)
+            else if (health <= maxHealth/3)
                 _spriteBatch.Draw(DamageDescriber.HeavilyDamaged, pos);
-            else if (health <= maxHealth / 2)
+            else if (health <= maxHealth/2)
                 _spriteBatch.Draw(DamageDescriber.ModeratelyDamaged, pos);
             else if (health < maxHealth)
                 _spriteBatch.Draw(DamageDescriber.LightlyDamaged, pos);
@@ -530,59 +567,83 @@ namespace RogueLike
         bool IsEnemyNearby(int x, int y)
         {
             // x
-            if (x + 1 < WIDTH && _map[(x + 1), y] != null && _map[(x + 1), y].EntityTexture != null && _map[(x + 1), y].EntityTexture.Name.Contains("enemy/"))
+            if (x + 1 < WIDTH && _map[(x + 1), y] != null && _map[(x + 1), y].EntityTexture != null &&
+                _map[(x + 1), y].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x + 2 < WIDTH && _map[(x + 2), y] != null && _map[(x + 2), y].EntityTexture != null && _map[(x + 2), y].EntityTexture.Name.Contains("enemy/"))
+            if (x + 2 < WIDTH && _map[(x + 2), y] != null && _map[(x + 2), y].EntityTexture != null &&
+                _map[(x + 2), y].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x + 3 < WIDTH && _map[(x + 3), y] != null && _map[(x + 3), y].EntityTexture != null && _map[(x + 3), y].EntityTexture.Name.Contains("enemy/"))
+            if (x + 3 < WIDTH && _map[(x + 3), y] != null && _map[(x + 3), y].EntityTexture != null &&
+                _map[(x + 3), y].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x - 1 >= 0 && _map[x - 1, y] != null && _map[x - 1, y].EntityTexture != null && _map[x - 1, y].EntityTexture.Name.Contains("enemy/"))
+            if (x - 1 >= 0 && _map[x - 1, y] != null && _map[x - 1, y].EntityTexture != null &&
+                _map[x - 1, y].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x - 2 >= 0 && _map[x - 2, y] != null && _map[x - 2, y].EntityTexture != null && _map[x - 2, y].EntityTexture.Name.Contains("enemy/"))
+            if (x - 2 >= 0 && _map[x - 2, y] != null && _map[x - 2, y].EntityTexture != null &&
+                _map[x - 2, y].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x - 3 >= 0 && _map[x - 3, y] != null && _map[x - 3, y].EntityTexture != null && _map[x - 3, y].EntityTexture.Name.Contains("enemy/"))
+            if (x - 3 >= 0 && _map[x - 3, y] != null && _map[x - 3, y].EntityTexture != null &&
+                _map[x - 3, y].EntityTexture.Name.Contains("enemy/"))
                 return true;
 
             // y
-            if (y + 1 < HEIGHT && _map[x, y + 1] != null && _map[x, y + 1].EntityTexture != null && _map[x, y + 1].EntityTexture.Name.Contains("enemy/"))
+            if (y + 1 < HEIGHT && _map[x, y + 1] != null && _map[x, y + 1].EntityTexture != null &&
+                _map[x, y + 1].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (y + 2 < HEIGHT && _map[x, y + 2] != null && _map[x, y + 2].EntityTexture != null && _map[x, y + 2].EntityTexture.Name.Contains("enemy/"))
+            if (y + 2 < HEIGHT && _map[x, y + 2] != null && _map[x, y + 2].EntityTexture != null &&
+                _map[x, y + 2].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (y + 3 < HEIGHT && _map[x, y + 3] != null && _map[x, y + 3].EntityTexture != null && _map[x, y + 3].EntityTexture.Name.Contains("enemy/"))
+            if (y + 3 < HEIGHT && _map[x, y + 3] != null && _map[x, y + 3].EntityTexture != null &&
+                _map[x, y + 3].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (y - 1 >= 0 && _map[x, y - 1] != null && _map[x, y - 1].EntityTexture != null && _map[x, y - 1].EntityTexture.Name.Contains("enemy/"))
+            if (y - 1 >= 0 && _map[x, y - 1] != null && _map[x, y - 1].EntityTexture != null &&
+                _map[x, y - 1].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (y - 2 >= 0 && _map[x, y - 2] != null && _map[x, y - 2].EntityTexture != null && _map[x, y - 2].EntityTexture.Name.Contains("enemy/"))
+            if (y - 2 >= 0 && _map[x, y - 2] != null && _map[x, y - 2].EntityTexture != null &&
+                _map[x, y - 2].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (y - 3 >= 0 && _map[x, y - 3] != null && _map[x, y - 3].EntityTexture != null && _map[x, y - 3].EntityTexture.Name.Contains("enemy/"))
-                return true;
-
-            // diag
-            if (x + 1 < WIDTH && y + 1 < HEIGHT && _map[x + 1, y + 1] != null && _map[x + 1, y + 1].EntityTexture != null && _map[x + 1, y + 1].EntityTexture.Name.Contains("enemy/"))
-                return true;
-            if (x + 2 < WIDTH && y + 2 < HEIGHT && _map[x + 2, y + 2] != null && _map[x + 2, y + 2].EntityTexture != null && _map[x + 2, y + 2].EntityTexture.Name.Contains("enemy/"))
-                return true;
-            if (x + 3 < WIDTH && y + 3 < HEIGHT && _map[x + 3, y + 3] != null && _map[x + 3, y + 3].EntityTexture != null && _map[x + 3, y + 3].EntityTexture.Name.Contains("enemy/"))
-                return true;
-            if (x - 1 >= 0 && y - 1 >= 0 && _map[x - 1, y - 1] != null && _map[x - 1, y - 1].EntityTexture != null && _map[x - 1, y - 1].EntityTexture.Name.Contains("enemy/"))
-                return true;
-            if (x - 2 >= 0 && y - 2 >= 0 && _map[x - 2, y - 2] != null && _map[x - 2, y - 2].EntityTexture != null && _map[x - 2, y - 2].EntityTexture.Name.Contains("enemy/"))
-                return true;
-            if (x - 3 >= 0 && y - 3 >= 0 && _map[x - 3, y - 3] != null && _map[x - 3, y - 3].EntityTexture != null && _map[x - 3, y - 3].EntityTexture.Name.Contains("enemy/"))
+            if (y - 3 >= 0 && _map[x, y - 3] != null && _map[x, y - 3].EntityTexture != null &&
+                _map[x, y - 3].EntityTexture.Name.Contains("enemy/"))
                 return true;
 
             // diag
-            if (x - 1 >= 0 && y + 1 < HEIGHT && _map[x - 1, y + 1] != null && _map[x - 1, y + 1].EntityTexture != null && _map[x - 1, y + 1].EntityTexture.Name.Contains("enemy/"))
+            if (x + 1 < WIDTH && y + 1 < HEIGHT && _map[x + 1, y + 1] != null &&
+                _map[x + 1, y + 1].EntityTexture != null && _map[x + 1, y + 1].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x - 2 >= 0 && y + 2 < HEIGHT && _map[x - 2, y + 2] != null && _map[x - 2, y + 2].EntityTexture != null && _map[x - 2, y + 2].EntityTexture.Name.Contains("enemy/"))
+            if (x + 2 < WIDTH && y + 2 < HEIGHT && _map[x + 2, y + 2] != null &&
+                _map[x + 2, y + 2].EntityTexture != null && _map[x + 2, y + 2].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x - 3 >= 0 && y + 3 < HEIGHT && _map[x - 3, y + 3] != null && _map[x - 3, y + 3].EntityTexture != null && _map[x - 3, y + 3].EntityTexture.Name.Contains("enemy/"))
+            if (x + 3 < WIDTH && y + 3 < HEIGHT && _map[x + 3, y + 3] != null &&
+                _map[x + 3, y + 3].EntityTexture != null && _map[x + 3, y + 3].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x + 1 < WIDTH && y - 1 >= 0 && _map[x + 1, y - 1] != null && _map[x + 1, y - 1].EntityTexture != null && _map[x + 1, y - 1].EntityTexture.Name.Contains("enemy/"))
+            if (x - 1 >= 0 && y - 1 >= 0 && _map[x - 1, y - 1] != null && _map[x - 1, y - 1].EntityTexture != null &&
+                _map[x - 1, y - 1].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x + 2 < WIDTH && y - 2 >= 0 && _map[x + 2, y - 2] != null && _map[x + 2, y - 2].EntityTexture != null && _map[x + 2, y - 2].EntityTexture.Name.Contains("enemy/"))
+            if (x - 2 >= 0 && y - 2 >= 0 && _map[x - 2, y - 2] != null && _map[x - 2, y - 2].EntityTexture != null &&
+                _map[x - 2, y - 2].EntityTexture.Name.Contains("enemy/"))
                 return true;
-            if (x + 3 < WIDTH && y - 3 >= 0 && _map[x + 3, y - 3] != null && _map[x + 3, y - 3].EntityTexture != null && _map[x + 3, y - 3].EntityTexture.Name.Contains("enemy/"))
+            if (x - 3 >= 0 && y - 3 >= 0 && _map[x - 3, y - 3] != null && _map[x - 3, y - 3].EntityTexture != null &&
+                _map[x - 3, y - 3].EntityTexture.Name.Contains("enemy/"))
+                return true;
+
+            // diag
+            if (x - 1 >= 0 && y + 1 < HEIGHT && _map[x - 1, y + 1] != null && _map[x - 1, y + 1].EntityTexture != null &&
+                _map[x - 1, y + 1].EntityTexture.Name.Contains("enemy/"))
+                return true;
+            if (x - 2 >= 0 && y + 2 < HEIGHT && _map[x - 2, y + 2] != null && _map[x - 2, y + 2].EntityTexture != null &&
+                _map[x - 2, y + 2].EntityTexture.Name.Contains("enemy/"))
+                return true;
+            if (x - 3 >= 0 && y + 3 < HEIGHT && _map[x - 3, y + 3] != null && _map[x - 3, y + 3].EntityTexture != null &&
+                _map[x - 3, y + 3].EntityTexture.Name.Contains("enemy/"))
+                return true;
+            if (x + 1 < WIDTH && y - 1 >= 0 && _map[x + 1, y - 1] != null && _map[x + 1, y - 1].EntityTexture != null &&
+                _map[x + 1, y - 1].EntityTexture.Name.Contains("enemy/"))
+                return true;
+            if (x + 2 < WIDTH && y - 2 >= 0 && _map[x + 2, y - 2] != null && _map[x + 2, y - 2].EntityTexture != null &&
+                _map[x + 2, y - 2].EntityTexture.Name.Contains("enemy/"))
+                return true;
+            if (x + 3 < WIDTH && y - 3 >= 0 && _map[x + 3, y - 3] != null && _map[x + 3, y - 3].EntityTexture != null &&
+                _map[x + 3, y - 3].EntityTexture.Name.Contains("enemy/"))
                 return true;
 
             return false;
@@ -590,17 +651,68 @@ namespace RogueLike
 
         List<Enemy> GetEnemies()
         {
-            List<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(t => string.Equals(t.Namespace, "RogueLike.Enemies", StringComparison.Ordinal)).ToArray().ToList();
-            return (from type in types where type.Name != "Enemy" select (Enemy) Activator.CreateInstance(type)).ToList();
+            List<Type> types =
+                Assembly.GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(t => string.Equals(t.Namespace, "RogueLike.Enemies", StringComparison.Ordinal))
+                    .ToArray()
+                    .ToList();
+            return
+                (from type in types where type.Name != "Enemy" select (Enemy) Activator.CreateInstance(type)).ToList();
         }
 
         void CalculateUnseen()
         {
-            for (int i = PLAYER_FOV * -1; i <= PLAYER_FOV; i++)
+            for (int i = PLAYER_FOV*-1; i <= PLAYER_FOV; i++)
             {
-                for (int j = PLAYER_FOV * -1; j <= PLAYER_FOV; j++)
+                for (int j = PLAYER_FOV*-1; j <= PLAYER_FOV; j++)
                 {
-                    _map[(_player.Position.X / TILE_WIDTH) + i, (_player.Position.Y / TILE_HEIGHT) + j].IsUnseen = false;
+                    _map[(_player.Position.X/TILE_WIDTH) + i, (_player.Position.Y/TILE_HEIGHT) + j].IsUnseen = false;
+                }
+            }
+        }
+
+        void DrawEquipment()
+        {
+            // helmet, mail, boots, weapon, shield
+            int xborder = (FOV*TILE_WIDTH) - EQUIPMENT_WIDTH + (TILE_WIDTH);
+            int yborder = TILE_HEIGHT;
+
+            for (int i = 0; i < 5; i++)
+            {
+                if (i == 3)
+                {
+                    _spriteBatch.Draw(_textures["slot"], new Vector2(xborder - (TILE_WIDTH/2) - TILE_WIDTH/4, yborder));
+
+                    // draw weapon
+                    if(_player.Equipment.Weapon != null)
+                        _spriteBatch.Draw(_player.Equipment.Weapon, new Vector2(xborder - (TILE_WIDTH / 2) - TILE_WIDTH / 4, yborder));
+                }
+                else if (i == 4)
+                {
+                    _spriteBatch.Draw(_textures["slot"], new Vector2(xborder + (TILE_WIDTH/2) + TILE_WIDTH/4, yborder));
+
+                    // draw shield
+                }
+                else
+                {
+                    _spriteBatch.Draw(_textures["slot"], new Vector2(xborder, yborder));
+                    yborder += TILE_HEIGHT*2;
+                }
+
+                if (i == 0)
+                {
+                    // draw helmet
+                }
+
+                if (i == 1)
+                {
+                    // draw mail
+                }
+
+                if (i == 2)
+                {
+                    // draw boots
                 }
             }
         }

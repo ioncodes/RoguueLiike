@@ -44,10 +44,11 @@
     <Compile Include="Enemies\Dwarf.cs" />
     <Compile Include="Enemies\Enemy.cs" />
     <Compile Include="EnemyKI.cs" />
+    <Compile Include="Equipment.cs" />
     <Compile Include="InternalSettings.cs" />
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Inventory\InventoryItem.cs" />
-    <Compile Include="Inventory\LargeSword.cs" />
+    <Compile Include="Inventory\GreatSword.cs" />
     <Compile Include="Levels\Level1.cs" />
     <Compile Include="Levels\Level0.cs" />
     <Compile Include="Levels\LevelInfo.cs" />
