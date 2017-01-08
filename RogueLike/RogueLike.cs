@@ -150,13 +150,6 @@ namespace RogueLike
             }
 
             _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
-            //foreach (var enemy in _enemies)
-            //{
-            //    _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture =
-            //        enemy.Value.Texture;
-            //    _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityName =
-            //        enemy.Key;
-            //}
 
 
             // Load Healthbars
