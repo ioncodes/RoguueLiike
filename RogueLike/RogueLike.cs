@@ -42,6 +42,8 @@ namespace RogueLike
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
         List<Enemy> _enemyTypes = new List<Enemy>();
 
+        readonly InternalSettings _internalSettings = new InternalSettings();
+
         int _framesPassed = 0;
 
         public RogueLike()
@@ -75,11 +77,15 @@ namespace RogueLike
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             
+            /* Load Map textures */
             _textures.Add("floor", Content.Load<Texture2D>("floor/vines0"));
             _textures.Add("wall", Content.Load<Texture2D>("wall/vines0"));
             _textures.Add("unseen", Content.Load<Texture2D>("floor/unseen"));
             _textures.Add("blood_red", Content.Load<Texture2D>("enemy/additions/blood_red"));
             _textures.Add("blood_green", Content.Load<Texture2D>("enemy/additions/blood_green"));
+
+            /* Load internal settings */
+            _internalSettings.Cursor.Texture = Content.Load<Texture2D>("user/cursor");
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
@@ -185,6 +191,9 @@ namespace RogueLike
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            MouseState mouseState = Mouse.GetState();
+            _internalSettings.Cursor.Position = new Vector2(mouseState.X, mouseState.Y);
+
             if (_framesPassed > 5)
             {
                 _framesPassed = 0;
@@ -334,6 +343,9 @@ namespace RogueLike
                     }
                 }
             }
+
+            _spriteBatch.Draw(_internalSettings.Cursor.Texture, _internalSettings.Cursor.Position, Color.White);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);

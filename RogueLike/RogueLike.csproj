@@ -44,6 +44,7 @@
     <Compile Include="Enemies\Dwarf.cs" />
     <Compile Include="Enemies\Enemy.cs" />
     <Compile Include="EnemyKI.cs" />
+    <Compile Include="InternalSettings.cs" />
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Inventory\InventoryItem.cs" />
     <Compile Include="Inventory\LargeSword.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="RogueLike.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User\UCursor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
