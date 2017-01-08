@@ -9,6 +9,7 @@ namespace RogueLikeMapBuilder
     /// <summary>
     /// This class demonstrates a simple map builder for a roguelike game. For a detailed
     /// look at using it, go here http://www.evilscience.co.uk/?p=553
+    /// TODO: Replace this class
     /// </summary>
     class csMapbuilder
     {
