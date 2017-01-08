@@ -40,8 +40,10 @@ namespace RogueLike
         private Player _player = new Player();
         readonly Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _thumbWeapons = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, Texture2D> _thumbShields = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _weapons = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _shields = new Dictionary<string, Texture2D>();
+        readonly Dictionary<string, InventoryItem> _items = new Dictionary<string, InventoryItem>();
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
         List<Enemy> _enemyTypes = new List<Enemy>();
 
@@ -92,10 +94,20 @@ namespace RogueLike
             _internalSettings.Cursor.Texture = Content.Load<Texture2D>("user/cursor");
 
             /* Load thumbnails for weapons */
-            _thumbWeapons.Add("greatsword1", Content.Load<Texture2D>("weapons/thumbnails/greatsword1"));
+            _thumbWeapons.Add("greatsword", Content.Load<Texture2D>("weapons/thumbnails/greatsword1"));
+
+            /* Load thumbnails for shields */
+            _thumbWeapons.Add("shield_knight_gray", Content.Load<Texture2D>("shields/thumbnails/large_shield1"));
 
             /* Load weapons */
             _weapons.Add("greatsword", Content.Load<Texture2D>("weapons/skins/great_sword"));
+
+            /* Load shields */
+            _shields.Add("shield_knight_gray", Content.Load<Texture2D>("shields/skins/shield_knight_gray"));
+
+            /* Load items */
+            _items.Add("greatsword", new GreatSword());
+            _items.Add("shield_knight_gray", new KnightShield());
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
@@ -500,12 +512,23 @@ namespace RogueLike
             // give xp
             _player.XP += xp;
             // drop item
-            _player.Inventory.Items.Add(new GreatSword());
-            if (_player.Equipment.Weapon == null)
+            var drop = _items.ElementAt(r.Next(_items.Count));
+            _player.Inventory.Items.Add(drop.Value);
+            if (drop.Value.ItemType == ItemType.Weapon)
             {
-                _player.Equipment.Weapon = _thumbWeapons["greatsword1"];
+                if (_player.Equipment.Weapon == null)
+                {
+                    _player.Equipment.Weapon = _thumbWeapons[drop.Key];
+                }
             }
-            UpdatePlayerStats(new GreatSword());
+            else if (drop.Value.ItemType == ItemType.Shield)
+            {
+                if (_player.Equipment.Shield == null)
+                {
+                    _player.Equipment.Shield = _thumbWeapons[drop.Key];
+                }
+            }
+            UpdatePlayerStats(drop.Value);
         }
 
         void UpdatePlayerStats(InventoryItem ii = null)
@@ -693,6 +716,8 @@ namespace RogueLike
                     _spriteBatch.Draw(_textures["slot"], new Vector2(xborder + (TILE_WIDTH/2) + TILE_WIDTH/4, yborder));
 
                     // draw shield
+                    if (_player.Equipment.Shield != null)
+                        _spriteBatch.Draw(_player.Equipment.Shield, new Vector2(xborder + (TILE_WIDTH / 2) + TILE_WIDTH / 4, yborder));
                 }
                 else
                 {

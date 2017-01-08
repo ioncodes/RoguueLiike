@@ -46,6 +46,7 @@
     <Compile Include="EnemyKI.cs" />
     <Compile Include="Equipment.cs" />
     <Compile Include="InternalSettings.cs" />
+    <Compile Include="Inventory\KnightShield.cs" />
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Inventory\InventoryItem.cs" />
     <Compile Include="Inventory\GreatSword.cs" />

@@ -21,6 +21,7 @@ namespace RogueLike
     {
         Weapon,
         Armor,
-        HealthSlot
+        HealthSlot,
+        Shield
     }
 }

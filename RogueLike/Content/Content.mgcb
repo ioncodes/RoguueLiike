@@ -2977,7 +2977,7 @@
 /processorParam:TextureFormat=Color
 /build:weapons/skins/whip.png
 
-#begin shields/boromir.png
+#begin shields/thumbnails/buckler1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2987,9 +2987,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/boromir.png
+/build:shields/thumbnails/buckler1.png
 
-#begin shields/bullseye.png
+#begin shields/thumbnails/buckler2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2999,9 +2999,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/bullseye.png
+/build:shields/thumbnails/buckler2.png
 
-#begin shields/gil-galad.png
+#begin shields/thumbnails/buckler3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3011,9 +3011,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/gil-galad.png
+/build:shields/thumbnails/buckler3.png
 
-#begin shields/gong.png
+#begin shields/thumbnails/large_shield1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3023,9 +3023,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/gong.png
+/build:shields/thumbnails/large_shield1.png
 
-#begin shields/shield_diamond_yellow.png
+#begin shields/thumbnails/large_shield2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3035,9 +3035,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_diamond_yellow.png
+/build:shields/thumbnails/large_shield2.png
 
-#begin shields/shield_kite1.png
+#begin shields/thumbnails/large_shield3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3047,9 +3047,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_kite1.png
+/build:shields/thumbnails/large_shield3.png
 
-#begin shields/shield_kite2.png
+#begin shields/thumbnails/shield1_elven.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3059,9 +3059,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_kite2.png
+/build:shields/thumbnails/shield1_elven.png
 
-#begin shields/shield_kite3.png
+#begin shields/thumbnails/shield2_kite.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3071,9 +3071,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_kite3.png
+/build:shields/thumbnails/shield2_kite.png
 
-#begin shields/shield_kite4.png
+#begin shields/thumbnails/shield3_round.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3083,9 +3083,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_kite4.png
+/build:shields/thumbnails/shield3_round.png
 
-#begin shields/shield_knight_blue.png
+#begin shields/skins/boromir.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3095,9 +3095,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_knight_blue.png
+/build:shields/skins/boromir.png
 
-#begin shields/shield_knight_gray.png
+#begin shields/skins/bullseye.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3107,9 +3107,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_knight_gray.png
+/build:shields/skins/bullseye.png
 
-#begin shields/shield_knight_rw.png
+#begin shields/skins/gil-galad.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3119,9 +3119,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_knight_rw.png
+/build:shields/skins/gil-galad.png
 
-#begin shields/shield_long_cross.png
+#begin shields/skins/gong.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3131,9 +3131,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_long_cross.png
+/build:shields/skins/gong.png
 
-#begin shields/shield_long_red.png
+#begin shields/skins/shield_diamond_yellow.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3143,9 +3143,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_long_red.png
+/build:shields/skins/shield_diamond_yellow.png
 
-#begin shields/shield_middle_black.png
+#begin shields/skins/shield_kite1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3155,9 +3155,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_middle_black.png
+/build:shields/skins/shield_kite1.png
 
-#begin shields/shield_middle_brown.png
+#begin shields/skins/shield_kite2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3167,9 +3167,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_middle_brown.png
+/build:shields/skins/shield_kite2.png
 
-#begin shields/shield_middle_cyan.png
+#begin shields/skins/shield_kite3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3179,9 +3179,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_middle_cyan.png
+/build:shields/skins/shield_kite3.png
 
-#begin shields/shield_middle_ethn.png
+#begin shields/skins/shield_kite4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3191,9 +3191,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_middle_ethn.png
+/build:shields/skins/shield_kite4.png
 
-#begin shields/shield_middle_gray.png
+#begin shields/skins/shield_knight_blue.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3203,9 +3203,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_middle_gray.png
+/build:shields/skins/shield_knight_blue.png
 
-#begin shields/shield_middle_round.png
+#begin shields/skins/shield_knight_gray.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3215,9 +3215,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_middle_round.png
+/build:shields/skins/shield_knight_gray.png
 
-#begin shields/shield_middle_unicorn.png
+#begin shields/skins/shield_knight_rw.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3227,9 +3227,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_middle_unicorn.png
+/build:shields/skins/shield_knight_rw.png
 
-#begin shields/shield_of_ignorance.png
+#begin shields/skins/shield_long_cross.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3239,9 +3239,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_of_ignorance.png
+/build:shields/skins/shield_long_cross.png
 
-#begin shields/shield_of_resistance.png
+#begin shields/skins/shield_long_red.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3251,9 +3251,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_of_resistance.png
+/build:shields/skins/shield_long_red.png
 
-#begin shields/shield_round1.png
+#begin shields/skins/shield_middle_black.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3263,9 +3263,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round1.png
+/build:shields/skins/shield_middle_black.png
 
-#begin shields/shield_round2.png
+#begin shields/skins/shield_middle_brown.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3275,9 +3275,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round2.png
+/build:shields/skins/shield_middle_brown.png
 
-#begin shields/shield_round3.png
+#begin shields/skins/shield_middle_cyan.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3287,9 +3287,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round3.png
+/build:shields/skins/shield_middle_cyan.png
 
-#begin shields/shield_round4.png
+#begin shields/skins/shield_middle_ethn.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3299,9 +3299,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round4.png
+/build:shields/skins/shield_middle_ethn.png
 
-#begin shields/shield_round5.png
+#begin shields/skins/shield_middle_gray.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3311,9 +3311,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round5.png
+/build:shields/skins/shield_middle_gray.png
 
-#begin shields/shield_round6.png
+#begin shields/skins/shield_middle_round.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3323,9 +3323,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round6.png
+/build:shields/skins/shield_middle_round.png
 
-#begin shields/shield_round7.png
+#begin shields/skins/shield_middle_unicorn.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3335,9 +3335,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round7.png
+/build:shields/skins/shield_middle_unicorn.png
 
-#begin shields/shield_round_small.png
+#begin shields/skins/shield_of_ignorance.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3347,9 +3347,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round_small.png
+/build:shields/skins/shield_of_ignorance.png
 
-#begin shields/shield_round_small2.png
+#begin shields/skins/shield_of_resistance.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3359,9 +3359,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round_small2.png
+/build:shields/skins/shield_of_resistance.png
 
-#begin shields/shield_round_white.png
+#begin shields/skins/shield_round_small.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3371,9 +3371,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_round_white.png
+/build:shields/skins/shield_round_small.png
 
-#begin shields/shield_shaman.png
+#begin shields/skins/shield_round_small2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3383,9 +3383,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_shaman.png
+/build:shields/skins/shield_round_small2.png
 
-#begin shields/shield_skull.png
+#begin shields/skins/shield_round_white.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3395,9 +3395,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_skull.png
+/build:shields/skins/shield_round_white.png
 
-#begin shields/shield_spriggan.png
+#begin shields/skins/shield_round1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3407,5 +3407,113 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:shields/shield_spriggan.png
+/build:shields/skins/shield_round1.png
+
+#begin shields/skins/shield_round2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_round2.png
+
+#begin shields/skins/shield_round3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_round3.png
+
+#begin shields/skins/shield_round4.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_round4.png
+
+#begin shields/skins/shield_round5.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_round5.png
+
+#begin shields/skins/shield_round6.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_round6.png
+
+#begin shields/skins/shield_round7.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_round7.png
+
+#begin shields/skins/shield_shaman.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_shaman.png
+
+#begin shields/skins/shield_skull.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_skull.png
+
+#begin shields/skins/shield_spriggan.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shields/skins/shield_spriggan.png
 
