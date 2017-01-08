@@ -28,6 +28,7 @@ namespace RogueLike
         private const int FOV = 20;
 
         private const int ENEMY_AMOUNT = 50;
+        private const int ENEMY_RADIUS = 3;
         private int enemyCounter = 0;
         Random r = new Random();
 
@@ -74,7 +75,10 @@ namespace RogueLike
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
-            csMapbuilder mpbuild = new csMapbuilder(WIDTH, HEIGHT); //the numbers are the starting map size
+            csMapbuilder mpbuild = new csMapbuilder(WIDTH, HEIGHT)
+            {
+                MaxRooms = 20
+            };
             int[,] randomMap = new int[WIDTH,HEIGHT];
             if (mpbuild.Build_ConnectedStartRooms() == true)
             {
@@ -99,14 +103,19 @@ namespace RogueLike
                             playerPosSet = true;
                             continue;
                         }
-                        if (r.Next(0,3) == 2 && _map[i,j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT)
+                        if (r.Next(0,5) == 2 && _map[i,j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT && !IsEnemyNearby(i,j))
                         {
-                            _enemies.Add("dwarf"+ Guid.NewGuid().ToString().Substring(0,10), new Enemy()
-                            {
-                                Texture = Content.Load<Texture2D>("enemy/dwarf"),
-                                Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT),
-                                XPReward = 50
-                            });
+                            var kvp = new KeyValuePair<string, Enemy>(
+                                "dwarf" + Guid.NewGuid().ToString().Substring(0, 10),
+                                new Enemy()
+                                {
+                                    Texture = Content.Load<Texture2D>("enemy/dwarf"),
+                                    Position = new Position(i * TILE_WIDTH, j * TILE_HEIGHT),
+                                    XPReward = 50
+                                });
+                            _map[i, j].EntityTexture = kvp.Value.Texture;
+                            _map[i, j].EntityName = kvp.Key;
+                            _enemies.Add(kvp.Key, kvp.Value);
                             enemyCounter++;
                         }
                     }
@@ -121,13 +130,13 @@ namespace RogueLike
             }
 
             _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
-            foreach (var enemy in _enemies)
-            {
-                _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture =
-                    enemy.Value.Texture;
-                _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityName =
-                    enemy.Key;
-            }
+            //foreach (var enemy in _enemies)
+            //{
+            //    _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture =
+            //        enemy.Value.Texture;
+            //    _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityName =
+            //        enemy.Key;
+            //}
 
 
             // Load Healthbars
@@ -469,6 +478,67 @@ namespace RogueLike
                 _spriteBatch.Draw(DamageDescriber.ModeratelyDamaged, pos);
             else if (health < maxHealth)
                 _spriteBatch.Draw(DamageDescriber.LightlyDamaged, pos);
+        }
+
+        bool IsEnemyNearby(int x, int y)
+        {
+            // x
+            if (x + 1 < WIDTH && _map[(x + 1), y] != null && _map[(x + 1), y].EntityTexture != null && _map[(x + 1), y].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x + 2 < WIDTH && _map[(x + 2), y] != null && _map[(x + 2), y].EntityTexture != null && _map[(x + 2), y].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x + 3 < WIDTH && _map[(x + 3), y] != null && _map[(x + 3), y].EntityTexture != null && _map[(x + 3), y].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 1 >= 0 && _map[x - 1, y] != null && _map[x - 1, y].EntityTexture != null && _map[x - 1, y].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 2 >= 0 && _map[x - 2, y] != null && _map[x - 2, y].EntityTexture != null && _map[x - 2, y].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 3 >= 0 && _map[x - 3, y] != null && _map[x - 3, y].EntityTexture != null && _map[x - 3, y].EntityTexture.Name.Contains("dwarf"))
+                return true;
+
+            // y
+            if (y + 1 < HEIGHT && _map[x, y + 1] != null && _map[x, y + 1].EntityTexture != null && _map[x, y + 1].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (y + 2 < HEIGHT && _map[x, y + 2] != null && _map[x, y + 2].EntityTexture != null && _map[x, y + 2].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (y + 3 < HEIGHT && _map[x, y + 3] != null && _map[x, y + 3].EntityTexture != null && _map[x, y + 3].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (y - 1 >= 0 && _map[x, y - 1] != null && _map[x, y - 1].EntityTexture != null && _map[x, y - 1].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (y - 2 >= 0 && _map[x, y - 2] != null && _map[x, y - 2].EntityTexture != null && _map[x, y - 2].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (y - 3 >= 0 && _map[x, y - 3] != null && _map[x, y - 3].EntityTexture != null && _map[x, y - 3].EntityTexture.Name.Contains("dwarf"))
+                return true;
+
+            // diag
+            if (x + 1 < WIDTH && y + 1 < HEIGHT && _map[x + 1, y + 1] != null && _map[x + 1, y + 1].EntityTexture != null && _map[x + 1, y + 1].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x + 2 < WIDTH && y + 2 < HEIGHT && _map[x + 2, y + 2] != null && _map[x + 2, y + 2].EntityTexture != null && _map[x + 2, y + 2].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x + 3 < WIDTH && y + 3 < HEIGHT && _map[x + 3, y + 3] != null && _map[x + 3, y + 3].EntityTexture != null && _map[x + 3, y + 3].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 1 >= 0 && y - 1 >= 0 && _map[x - 1, y - 1] != null && _map[x - 1, y - 1].EntityTexture != null && _map[x - 1, y - 1].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 2 >= 0 && y - 2 >= 0 && _map[x - 2, y - 2] != null && _map[x - 2, y - 2].EntityTexture != null && _map[x - 2, y - 2].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 3 >= 0 && y - 3 >= 0 && _map[x - 3, y - 3] != null && _map[x - 3, y - 3].EntityTexture != null && _map[x - 3, y - 3].EntityTexture.Name.Contains("dwarf"))
+                return true;
+
+            // diag
+            if (x - 1 >= 0 && y + 1 < HEIGHT && _map[x - 1, y + 1] != null && _map[x - 1, y + 1].EntityTexture != null && _map[x - 1, y + 1].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 2 >= 0 && y + 2 < HEIGHT && _map[x - 2, y + 2] != null && _map[x - 2, y + 2].EntityTexture != null && _map[x - 2, y + 2].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x - 3 >= 0 && y + 3 < HEIGHT && _map[x - 3, y + 3] != null && _map[x - 3, y + 3].EntityTexture != null && _map[x - 3, y + 3].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x + 1 < WIDTH && y - 1 >= 0 && _map[x + 1, y - 1] != null && _map[x + 1, y - 1].EntityTexture != null && _map[x + 1, y - 1].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x + 2 < WIDTH && y - 2 >= 0 && _map[x + 2, y - 2] != null && _map[x + 2, y - 2].EntityTexture != null && _map[x + 2, y - 2].EntityTexture.Name.Contains("dwarf"))
+                return true;
+            if (x + 3 < WIDTH && y - 3 >= 0 && _map[x + 3, y - 3] != null && _map[x + 3, y - 3].EntityTexture != null && _map[x + 3, y - 3].EntityTexture.Name.Contains("dwarf"))
+                return true;
+
+            return false;
         }
     }
 }
