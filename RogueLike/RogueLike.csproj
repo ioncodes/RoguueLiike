@@ -40,7 +40,9 @@
   <ItemGroup>
     <Compile Include="DamageDescriber.cs" />
     <Compile Include="Dungeon.cs" />
-    <Compile Include="Enemy.cs" />
+    <Compile Include="Enemies\Elf.cs" />
+    <Compile Include="Enemies\Dwarf.cs" />
+    <Compile Include="Enemies\Enemy.cs" />
     <Compile Include="EnemyKI.cs" />
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Inventory\InventoryItem.cs" />
