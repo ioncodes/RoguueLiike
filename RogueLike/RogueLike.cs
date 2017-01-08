@@ -78,6 +78,8 @@ namespace RogueLike
             _textures.Add("floor", Content.Load<Texture2D>("floor/vines0"));
             _textures.Add("wall", Content.Load<Texture2D>("wall/vines0"));
             _textures.Add("unseen", Content.Load<Texture2D>("floor/unseen"));
+            _textures.Add("blood_red", Content.Load<Texture2D>("enemy/additions/blood_red"));
+            _textures.Add("blood_green", Content.Load<Texture2D>("enemy/additions/blood_green"));
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
@@ -302,9 +304,19 @@ namespace RogueLike
                     if (!_map[x, y].IsUnseen)
                     {
                         _spriteBatch.Draw(_map[x, y].Texture, new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT));
+                        var pos = new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT);
+
+                        if (_map[x, y].AdditionalTextures.Count > 0)
+                        {
+                            // blood, etc...
+                            foreach (var texture in _map[x, y].AdditionalTextures)
+                            {
+                                _spriteBatch.Draw(texture, pos);
+                            }
+                        }
+
                         if (_map[x, y].EntityTexture != null)
                         {
-                            var pos = new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT);
                             _spriteBatch.Draw(_map[x, y].EntityTexture, pos);
                             if (_map[x, y].EntityTexture == _player.Texture)
                             {
@@ -438,6 +450,7 @@ namespace RogueLike
         void KillEnemey(string name)
         {
             Drop(_enemies[name].XPReward); // enemy list is fast empty
+            _map[_enemies[name].Position.X/TILE_WIDTH, _enemies[name].Position.Y / TILE_HEIGHT].AdditionalTextures.Add(_textures["blood_red"]);
             _enemies.Remove(name);
         }
 
