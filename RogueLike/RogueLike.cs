@@ -154,7 +154,6 @@ namespace RogueLike
             }
 
             _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
-            //_map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].IsUnseen = false;
             CalculateUnseen();
 
             // Load Healthbars
@@ -331,7 +330,6 @@ namespace RogueLike
                     }
                     else
                     {
-                        //_spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "unseen").Value, new Vector2((i + 10) * TILE_WIDTH, (j + 10) * TILE_HEIGHT));
                         _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "unseen").Value, new Vector2((i+10) * TILE_WIDTH, (j+10) * TILE_HEIGHT));
                     }
                 }
@@ -349,8 +347,6 @@ namespace RogueLike
                 _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture = null;
                 enemy.Value.Position.X += mov[0];
                 enemy.Value.Position.Y += mov[1];
-                //enemy.Value.Position.X += 0; // debug
-                //enemy.Value.Position.Y += 0; // debug
                 _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityTexture = enemy.Value.Texture;
                 _map[enemy.Value.Position.X / TILE_WIDTH, enemy.Value.Position.Y / TILE_HEIGHT].EntityName =
                     enemy.Key;
