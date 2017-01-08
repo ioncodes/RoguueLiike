@@ -280,23 +280,22 @@ namespace RogueLike
                     if (y >= HEIGHT)
                         continue;
                     _spriteBatch.Draw(_map[x,y].Texture, new Vector2((i+10)*TILE_WIDTH, (j+10)*TILE_HEIGHT));
-                    if(_map[x,y].EntityTexture != null)
-                        _spriteBatch.Draw(_map[x,y].EntityTexture, new Vector2((i+10)*TILE_WIDTH,(j+10)*TILE_HEIGHT));
+                    if (_map[x, y].EntityTexture != null)
+                    {
+                        var pos = new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT);
+                        _spriteBatch.Draw(_map[x, y].EntityTexture, pos);
+                        if (_map[x, y].EntityTexture == _player.Texture)
+                        {
+                            DrawHealthBar(_player.Health, _player.MaxHealth, pos);
+                        }
+                        else
+                        {
+                            Enemy enemy = GetEnemy(x, y);
+                            DrawHealthBar(enemy.Health, enemy.MaxHealth, pos);
+                        }
+                    }
                 }
             }
-
-            //_spriteBatch.Draw(_player.Texture, new Vector2(_player.Position.X, _player.Position.Y));
-            DrawHealthBar(_player.Health, _player.MaxHealth, new Vector2(_player.Position.X, _player.Position.Y));
-
-            foreach (var enemy in _enemies)
-            {
-                Vector2 pos = new Vector2(enemy.Value.Position.X, enemy.Value.Position.Y);
-                _spriteBatch.Draw(enemy.Value.Texture, pos);
-                int maxHealth = enemy.Value.MaxHealth;
-                int health = enemy.Value.Health;
-                DrawHealthBar(health, maxHealth, pos);
-            }
-
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -361,7 +360,7 @@ namespace RogueLike
         bool IsEnemyNext(int x, int y)
         {
             int[] virtPos = GetVirtualPostition(x, y);
-            return _map[virtPos[0], virtPos[1]].EntityTexture != null && _map[virtPos[0], virtPos[1]].EntityTexture.Name != "wall/dwarf";
+            return _map[virtPos[0], virtPos[1]].EntityTexture != null && _map[virtPos[0], virtPos[1]].EntityTexture.Name == "enemy/dwarf";
         }
 
         int[] GetVirtualPostition(int x, int y)
@@ -384,11 +383,10 @@ namespace RogueLike
 
         Enemy GetEnemy(int x, int y)
         {
-            int[] virtPos = GetVirtualPostition(x, y);
-            virtPos[0] *= TILE_WIDTH;
-            virtPos[1] *= TILE_HEIGHT;
+            x *= TILE_WIDTH;
+            y *= TILE_HEIGHT;
 
-            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1])) select enemy.Value).FirstOrDefault();
+            return (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(x, y)) select enemy.Value).FirstOrDefault();
         }
 
         KeyValuePair<string, Enemy> GetEnemy(int[] virtPos)
