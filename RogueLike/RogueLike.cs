@@ -148,6 +148,7 @@ namespace RogueLike
             _enemies.Clear();
             _map = new MapTile[WIDTH,HEIGHT];
             _player = new Player();
+            enemyCounter = 0;
             Content.Unload();
         }
 
@@ -332,7 +333,10 @@ namespace RogueLike
             target.Value.Health -= _player.Attack;
 
             if (IsPlayerDead())
+            {
                 Die();
+                return false;
+            }
             if (target.Value.Health > 0) return false;
             KillEnemey(target.Key);
             return true;

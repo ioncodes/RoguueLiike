@@ -11,6 +11,7 @@ namespace RogueLike
     {
         public int[] Decide(MapTile[,] map, Enemy enemy, string name, Player player)
         {
+            return new[] {0, 0};
             int[] paths = GetPaths(map, enemy, name, player);
             int[] way = {0,0};
             if (paths[0] == 1)
