@@ -239,12 +239,22 @@ namespace RogueLike
         /// </summary>
         protected override void UnloadContent()
         {
+            // TODO: Don't unload unnecessary things
             _textures.Clear();
             _enemies.Clear();
             _map = new MapTile[WIDTH, HEIGHT];
             _player = new Player();
             _weapons.Clear();
             _shields.Clear();
+            _boots.Clear();
+            _helmets.Clear();
+            _mails.Clear();
+            _thumbBoots.Clear();
+            _thumbHelmets.Clear();
+            _thumbMails.Clear();
+            _thumbShields.Clear();
+            _thumbWeapons.Clear();
+            _items.Clear();
             enemyCounter = 0;
             Content.Unload();
         }
