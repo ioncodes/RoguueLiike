@@ -28,7 +28,7 @@ namespace RogueLike
         private const int HEIGHT = 150;
         private const int FOV = 20;
 
-        private const int ENEMY_AMOUNT = 50;
+        private const int ENEMY_AMOUNT = 150; // around 150 is a good number
         private const int ENEMY_RADIUS = 3;
         private int enemyCounter = 0;
         Random r = new Random();
@@ -107,7 +107,7 @@ namespace RogueLike
                             playerPosSet = true;
                             continue;
                         }
-                        if (r.Next(0,3) == 1 && _map[i,j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT && !IsEnemyNearby(i,j))
+                        if (r.Next(0,8) == 1 && _map[i,j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT && !IsEnemyNearby(i,j)) // around 10 is a good number
                         {
                             int enemyRandSelector = r.Next(0, 10);
                             var kvp = new KeyValuePair<string, Enemy>();
