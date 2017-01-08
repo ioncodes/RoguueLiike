@@ -12,6 +12,6 @@ namespace RogueLike
         public Texture2D Texture { get; set; }
         public Texture2D EntityTexture { get; set; }
         public string EntityName { get; set; }
-        public bool IsUnseen { get; set; }= true;
+        public bool IsUnseen { get; set; } = true;
     }
 }

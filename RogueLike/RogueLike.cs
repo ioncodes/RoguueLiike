@@ -27,6 +27,7 @@ namespace RogueLike
         private const int WIDTH = 150;
         private const int HEIGHT = 150;
         private const int FOV = 20;
+        private const int PLAYER_FOV = 1; // 1 or 2 is best
 
         private const int ENEMY_AMOUNT = 150; // around 150 is a good number
         private const int ENEMY_RADIUS = 3;
@@ -76,6 +77,7 @@ namespace RogueLike
             
             _textures.Add("floor", Content.Load<Texture2D>("floor/vines0"));
             _textures.Add("wall", Content.Load<Texture2D>("wall/vines0"));
+            _textures.Add("unseen", Content.Load<Texture2D>("floor/unseen"));
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
@@ -150,7 +152,8 @@ namespace RogueLike
             }
 
             _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].EntityTexture = _player.Texture;
-
+            //_map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].IsUnseen = false;
+            CalculateUnseen();
 
             // Load Healthbars
             DamageDescriber.AlmostDead = Content.Load<Texture2D>("health/almost");
@@ -207,6 +210,7 @@ namespace RogueLike
                     }
                 }
                 MoveEnemies();
+                CalculateUnseen();
             }
             if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Right))
             {
@@ -226,6 +230,7 @@ namespace RogueLike
                     }
                 }
                 MoveEnemies();
+                CalculateUnseen();
             }
             if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Down))
             {
@@ -245,6 +250,7 @@ namespace RogueLike
                     }
                 }
                 MoveEnemies();
+                CalculateUnseen();
             }
             if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Up))
             {
@@ -264,6 +270,7 @@ namespace RogueLike
                     }
                 }
                 MoveEnemies();
+                CalculateUnseen();
             }
 
             base.Update(gameTime);
@@ -292,20 +299,28 @@ namespace RogueLike
                         continue;
                     if (y >= HEIGHT)
                         continue;
-                    _spriteBatch.Draw(_map[x,y].Texture, new Vector2((i+10)*TILE_WIDTH, (j+10)*TILE_HEIGHT));
-                    if (_map[x, y].EntityTexture != null)
+                    if (!_map[x, y].IsUnseen)
                     {
-                        var pos = new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT);
-                        _spriteBatch.Draw(_map[x, y].EntityTexture, pos);
-                        if (_map[x, y].EntityTexture == _player.Texture)
+                        _spriteBatch.Draw(_map[x, y].Texture, new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT));
+                        if (_map[x, y].EntityTexture != null)
                         {
-                            DrawHealthBar(_player.Health, _player.MaxHealth, pos);
+                            var pos = new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT);
+                            _spriteBatch.Draw(_map[x, y].EntityTexture, pos);
+                            if (_map[x, y].EntityTexture == _player.Texture)
+                            {
+                                DrawHealthBar(_player.Health, _player.MaxHealth, pos);
+                            }
+                            else
+                            {
+                                Enemy enemy = GetEnemy(x, y);
+                                DrawHealthBar(enemy.Health, enemy.MaxHealth, pos);
+                            }
                         }
-                        else
-                        {
-                            Enemy enemy = GetEnemy(x, y);
-                            DrawHealthBar(enemy.Health, enemy.MaxHealth, pos);
-                        }
+                    }
+                    else
+                    {
+                        //_spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "unseen").Value, new Vector2((i + 10) * TILE_WIDTH, (j + 10) * TILE_HEIGHT));
+                        _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "unseen").Value, new Vector2((i+10) * TILE_WIDTH, (j+10) * TILE_HEIGHT));
                     }
                 }
             }
@@ -556,6 +571,17 @@ namespace RogueLike
         {
             List<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(t => string.Equals(t.Namespace, "RogueLike.Enemies", StringComparison.Ordinal)).ToArray().ToList();
             return (from type in types where type.Name != "Enemy" select (Enemy) Activator.CreateInstance(type)).ToList();
+        }
+
+        void CalculateUnseen()
+        {
+            for (int i = PLAYER_FOV * -1; i <= PLAYER_FOV; i++)
+            {
+                for (int j = PLAYER_FOV * -1; j <= PLAYER_FOV; j++)
+                {
+                    _map[(_player.Position.X / TILE_WIDTH) + i, (_player.Position.Y / TILE_HEIGHT) + j].IsUnseen = false;
+                }
+            }
         }
     }
 }
