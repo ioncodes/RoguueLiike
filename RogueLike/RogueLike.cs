@@ -465,12 +465,13 @@ namespace RogueLike
 
         bool Attack(int x, int y)
         {
+
             int[] virtPos = GetVirtualPostition(x, y);
             Enemy enemy = GetEnemy(virtPos[0], virtPos[1]);
             if (enemy == null)
                 return false;
             Console.WriteLine("Attack");
-
+            _messageQueue.Add("You attacked " + enemy.Name, Color.Red);
             _player.Health -= enemy.Attack;
             enemy.Health -= _player.Attack;
 
