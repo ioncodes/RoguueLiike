@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RogueLike.Enemies;
+using RogueLike.Inventory;
 using RogueLike.Levels;
 using RogueLikeMapBuilder;
 using Color = Microsoft.Xna.Framework.Color;
@@ -53,10 +54,12 @@ namespace RogueLike
         readonly Dictionary<string, Texture2D> _boots = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _mails = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, Texture2D> _helmets = new Dictionary<string, Texture2D>();
+        readonly Dictionary<int, Gold> _gold = new Dictionary<int, Gold>();
         readonly Dictionary<string, InventoryItem> _items = new Dictionary<string, InventoryItem>();
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
         private List<Tuple<string, Color, int>> _messageQueue = new List<Tuple<string, Color, int>>();
         List<Enemy> _enemyTypes = new List<Enemy>();
+        List<InventoryItem> _itemTypes = new List<InventoryItem>();
         private SpriteFont _font;
 
         readonly InternalSettings _internalSettings = new InternalSettings();
@@ -90,6 +93,7 @@ namespace RogueLike
         protected override void LoadContent()
         {
             _enemyTypes = GetEnemies(); // Load the Enemy classes
+            _itemTypes = GetItems(); // Load the InventoryItem classes
 
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -143,7 +147,6 @@ namespace RogueLike
             _mails.Add("leather_armour2", Content.Load<Texture2D>("armour/skins/mail/leather_armour2"));
             _mails.Add("leather_armour3", Content.Load<Texture2D>("armour/skins/mail/leather_armour3"));
 
-
             /* Load items */
             _items.Add("greatsword", new GreatSword());
             _items.Add("shield_knight_gray", new KnightShield());
@@ -154,6 +157,23 @@ namespace RogueLike
             _items.Add("iron_helmet2", new IronHelmet2());
             _items.Add("iron_helmet3", new IronHelmet3());
             _items.Add("boot_middle_brown3", new BootsMiddleBrown3());
+            _items.Add("gold", new Gold());
+
+            /* Load gold */
+            _gold.Add(1, new Gold() { Texture = Content.Load<Texture2D>("money/01")});
+            _gold.Add(2, new Gold() { Texture = Content.Load<Texture2D>("money/02")});
+            _gold.Add(3, new Gold() { Texture = Content.Load<Texture2D>("money/03")});
+            _gold.Add(4, new Gold() { Texture = Content.Load<Texture2D>("money/04")});
+            _gold.Add(5, new Gold() { Texture = Content.Load<Texture2D>("money/05")});
+            _gold.Add(6, new Gold() { Texture = Content.Load<Texture2D>("money/06")});
+            _gold.Add(7, new Gold() { Texture = Content.Load<Texture2D>("money/07")});
+            _gold.Add(8, new Gold() { Texture = Content.Load<Texture2D>("money/08")});
+            _gold.Add(9, new Gold() { Texture = Content.Load<Texture2D>("money/09")});
+            _gold.Add(10, new Gold() { Texture = Content.Load<Texture2D>("money/10")});
+            _gold.Add(16, new Gold() { Texture = Content.Load<Texture2D>("money/16")});
+            _gold.Add(19, new Gold() { Texture = Content.Load<Texture2D>("money/19")});
+            _gold.Add(23, new Gold() { Texture = Content.Load<Texture2D>("money/23")});
+            _gold.Add(25, new Gold() { Texture = Content.Load<Texture2D>("money/25")});
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
 
@@ -202,6 +222,7 @@ namespace RogueLike
                             var enemy = (Enemy)Activator.CreateInstance(type);
                             enemy.Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT);
                             enemy.Texture = Content.Load<Texture2D>(enemy.TextureName);
+                            enemy.Inventory.Items.AddRange(GenerateRandomInventory());
                             var kvp = new KeyValuePair<string, Enemy>(enemy.Name + Guid.NewGuid(), enemy);
                             _map[i, j].EntityTexture = kvp.Value.Texture;
                             _map[i, j].EntityName = kvp.Key;
@@ -534,7 +555,7 @@ namespace RogueLike
 
         void KillEnemy(string name)
         {
-            Drop(_enemies[name].XPReward);
+            Drop(_enemies[name].XPReward, _enemies[name].Inventory.Items);
             _map[_enemies[name].Position.X/TILE_WIDTH, _enemies[name].Position.Y/TILE_HEIGHT].AdditionalTextures.Add(
                 _textures["blood_red"]);
             _enemies.Remove(name);
@@ -543,7 +564,7 @@ namespace RogueLike
         void KillEnemy(Enemy enemy)
         {
             _messageQueue.Add(new Tuple<string, Color, int>("You killed " + enemy.Name, Color.Green, 0));
-            Drop(enemy.XPReward); 
+            Drop(enemy.XPReward, enemy.Inventory.Items); 
             _map[enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT].AdditionalTextures.Add(
                 _textures["blood_red"]);
             _enemies.Remove(GetEnemyName(enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT));
@@ -551,56 +572,88 @@ namespace RogueLike
             _map[enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT].EntityName = null;
         }
 
-        void Drop(int xp)
+        void Drop(int xp, List<InventoryItem> items)
         {
             // give xp
             _player.XP += xp;
             _messageQueue.Add(new Tuple<string, Color, int>("You received " + xp + " XP", Color.Blue, 0));
             // drop item
-            var drop = _items.ElementAt(r.Next(_items.Count));
-            _messageQueue.Add(new Tuple<string, Color, int>("You received " + drop.Value.Name, Color.Blue, 0));
-            _player.Inventory.Items.Add(drop.Value);
-            switch (drop.Value.ItemType)
+            foreach (var item1 in items)
             {
-                case ItemType.Weapon:
-                    if (_player.Equipment.Thumbnails.Weapon == null)
+                KeyValuePair<string, InventoryItem> ii = new KeyValuePair<string, InventoryItem>();
+                foreach (var i in _items)
+                {
+                    if (i.Value.Name == item1.Name)
                     {
-                        _player.Equipment.Thumbnails.Weapon = _thumbWeapons[drop.Key];
-                        _player.Equipment.Skins.Weapon = _weapons[drop.Key];
+                        ii = i;
                     }
+                }
+                _messageQueue.Add(new Tuple<string, Color, int>("You received " + ii.Value.Name, Color.Blue, 0));
+                _player.Inventory.Items.Add(ii.Value);
+                switch (ii.Value.ItemType)
+                {
+                    case ItemType.Weapon:
+                        if (_player.Equipment.Thumbnails.Weapon == null)
+                        {
+                            _player.Equipment.Thumbnails.Weapon = _thumbWeapons[ii.Key];
+                            _player.Equipment.Skins.Weapon = _weapons[ii.Key];
+                        }
+                        break;
+                    case ItemType.Shield:
+                        if (_player.Equipment.Thumbnails.Shield == null)
+                        {
+                            _player.Equipment.Thumbnails.Shield = _thumbShields[ii.Key];
+                            _player.Equipment.Skins.Shield = _shields[ii.Key];
+                        }
+                        break;
+                    case ItemType.Boots:
+                        if (_player.Equipment.Thumbnails.Boots == null)
+                        {
+                            _player.Equipment.Thumbnails.Boots = _thumbBoots[ii.Key];
+                            _player.Equipment.Skins.Boots = _boots[ii.Key];
+                        }
+                        break;
+                    case ItemType.Helmet:
+                        if (_player.Equipment.Thumbnails.Helmet == null)
+                        {
+                            _player.Equipment.Thumbnails.Helmet = _thumbHelmets[ii.Key];
+                            _player.Equipment.Skins.Helmet = _helmets[ii.Key];
+                        }
+                        break;
+                    case ItemType.Mail:
+                        if (_player.Equipment.Thumbnails.Mail == null)
+                        {
+                            _player.Equipment.Thumbnails.Mail = _thumbMails[ii.Key];
+                            _player.Equipment.Skins.Mail = _mails[ii.Key];
+                        }
+                        break;
+                    case ItemType.Money:
+                        if (_player.Inventory.Items.Count > 0)
+                        {
+                            foreach (var item in _player.Inventory.Items)
+                            {
+                                if (item.Name == "Gold")
+                                {
+                                    item.Value += ii.Value.Value;
+                                }
+                            }
+                        }
+                        break;
+                }
+                bool alreadyExists = false;
+                foreach (var i in _player.Inventory.Items)
+                {
+                    if (i.Name != ii.Value.Name) continue;
+                    i.Amount++;
+                    alreadyExists = true;
                     break;
-                case ItemType.Shield:
-                    if (_player.Equipment.Thumbnails.Shield == null)
-                    {
-                        _player.Equipment.Thumbnails.Shield = _thumbShields[drop.Key];
-                        _player.Equipment.Skins.Shield = _shields[drop.Key];
-                    }
-                    break;
-                case ItemType.Boots:
-                    if (_player.Equipment.Thumbnails.Boots == null)
-                    {
-                        _player.Equipment.Thumbnails.Boots = _thumbBoots[drop.Key];
-                        _player.Equipment.Skins.Boots = _boots[drop.Key];
-                    }
-                    break;
-                case ItemType.Helmet:
-                    if (_player.Equipment.Thumbnails.Helmet == null)
-                    {
-                        _player.Equipment.Thumbnails.Helmet = _thumbHelmets[drop.Key];
-                        _player.Equipment.Skins.Helmet = _helmets[drop.Key];
-                    }
-                    break;
-                case ItemType.Mail:
-                    if (_player.Equipment.Thumbnails.Mail == null)
-                    {
-                        _player.Equipment.Thumbnails.Mail = _thumbMails[drop.Key];
-                        _player.Equipment.Skins.Mail = _mails[drop.Key];
-                    }
-                    break;
+                }
+                if(!alreadyExists)
+                    _player.Inventory.Items.Add(ii.Value);
+                UpdatePlayerStats(ii.Value);
             }
             _player.Equipment.Thumbnails.Update();
             _player.Equipment.Skins.Update();
-            UpdatePlayerStats(drop.Value);
         }
 
         void UpdatePlayerStats(InventoryItem ii = null)
@@ -622,7 +675,6 @@ namespace RogueLike
                         break;
                 }
             }
-            _player.Inventory.Amount = _player.Inventory.Items.Count;
             if (_player.XP >= _player.Level.XP)
             {
                 int xp = _player.Level.XP - _player.XP;
@@ -758,6 +810,18 @@ namespace RogueLike
                 (from type in types where type.Name != "Enemy" select (Enemy) Activator.CreateInstance(type)).ToList();
         }
 
+        List<InventoryItem> GetItems()
+        {
+            List<Type> types =
+                Assembly.GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(t => string.Equals(t.Namespace, "RogueLike.Inventory", StringComparison.Ordinal))
+                    .ToArray()
+                    .ToList();
+            return
+                (from type in types where type.Name != "Inventory" && type.Name != "InventoryItem" && type.Name != "ItemType" select (InventoryItem)Activator.CreateInstance(type)).ToList();
+        }
+
         void CalculateUnseen()
         {
             for (int i = PLAYER_FOV*-1; i <= PLAYER_FOV; i++)
@@ -839,6 +903,19 @@ namespace RogueLike
                 _spriteBatch.DrawString(_font, message.Item1, new Vector2(x, y), message.Item2, 0f, Vector2.Zero, new Vector2(0.75f,0.75f), SpriteEffects.None, 0f);
                 y += TILE_HEIGHT/2;
             }
+        }
+
+        List<InventoryItem> GenerateRandomInventory()
+        {
+            var items = new List<InventoryItem>();
+            int amountToGenerate = r.Next(0, 6);
+            for (int i = 0; i < amountToGenerate; i++)
+            {
+                var type = _itemTypes[r.Next(_itemTypes.Count)].GetType();
+                var item = (InventoryItem)Activator.CreateInstance(type);
+                items.Add(item);
+            }
+            return items;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace RogueLike.Enemies
         public override int MaxHealth { get; set; } = 20;
         public override int Attack { get; set; } = 5;
         public override int Shield { get; set; } = 0;
-        public override Inventory Inventory { get; set; } = new Inventory();
+        public override Inventory.Inventory Inventory { get; set; } = new Inventory.Inventory();
         public override Equipment Equipment { get; set; } = new Equipment();
         public override int XPReward { get; set; } = 50;
         public override EnemyKI EnemyKi { get; } = new EnemyKI();

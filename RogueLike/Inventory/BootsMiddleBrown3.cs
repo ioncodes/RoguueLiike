@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace RogueLike
+namespace RogueLike.Inventory
 {
     class BootsMiddleBrown3 : InventoryItem
     {
@@ -15,6 +10,7 @@ namespace RogueLike
         public override int Health { get; } = 0;
         public override int Shield { get; } = 1;
         public override Texture2D Texture { get; set; }
-        public override int Value { get; } = 10;
+        public override int Value { get; set; } = 10;
+        public override int Amount { get; set; } = 0;
     }
 }

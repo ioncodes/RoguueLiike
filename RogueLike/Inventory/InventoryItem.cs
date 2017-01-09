@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace RogueLike
+namespace RogueLike.Inventory
 {
     public abstract class InventoryItem
     {
@@ -15,7 +10,8 @@ namespace RogueLike
         public abstract int Health { get; }
         public abstract int Shield { get; }
         public abstract Texture2D Texture { get; set; }
-        public abstract int Value { get; }
+        public abstract int Value { get; set; }
+        public abstract int Amount { get; set; }
     }
 
     public enum ItemType

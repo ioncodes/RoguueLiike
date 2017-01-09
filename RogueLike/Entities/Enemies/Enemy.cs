@@ -22,7 +22,7 @@ namespace RogueLike
         public abstract int MaxHealth { get; set; }
         public abstract int Attack { get; set; }
         public abstract int Shield { get; set; }
-        public abstract Inventory Inventory { get; set; }
+        public abstract Inventory.Inventory Inventory { get; set; }
         public abstract Equipment Equipment { get; set; }
     }
 

@@ -18,7 +18,7 @@ namespace RogueLike
         public int MaxHealth { get; set; } = 20;
         public int Attack { get; set; } = 6;
         public int Shield { get; set; } = 0;
-        public Inventory Inventory { get; set; } = new Inventory();
+        public Inventory.Inventory Inventory { get; set; } = new Inventory.Inventory();
         public Equipment Equipment { get; set; } = new Equipment();
     }
 }
