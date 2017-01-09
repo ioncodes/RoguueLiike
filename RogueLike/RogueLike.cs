@@ -28,7 +28,7 @@ namespace RogueLike
         private const int HEIGHT = 150;
         private const int FOV = 20;
         private const int PLAYER_FOV = 1; // 1 or 2 is best
-        private const int EQUIPMENT_WIDTH = 64;
+        private const int EQUIPMENT_WIDTH = TILE_WIDTH*4;
 
         private const int ENEMY_AMOUNT = 150; // around 150 is a good number
         private const int ENEMY_RADIUS = 3;
@@ -747,7 +747,7 @@ namespace RogueLike
         void DrawEquipment()
         {
             // helmet, mail, boots, weapon, shield
-            int xborder = (FOV*TILE_WIDTH) - EQUIPMENT_WIDTH + (TILE_WIDTH);
+            int xborder = (FOV*TILE_WIDTH) - EQUIPMENT_WIDTH + (TILE_WIDTH*5);
             int yborder = TILE_HEIGHT;
 
             for (int i = 0; i < 5; i++)
