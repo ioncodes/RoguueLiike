@@ -54,7 +54,9 @@ namespace RogueLike
         readonly Dictionary<string, Texture2D> _helmets = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, InventoryItem> _items = new Dictionary<string, InventoryItem>();
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
+        readonly Dictionary<string, Color> _messageQueue = new Dictionary<string, Color>();
         List<Enemy> _enemyTypes = new List<Enemy>();
+        private SpriteFont _font;
 
         readonly InternalSettings _internalSettings = new InternalSettings();
 
@@ -153,6 +155,9 @@ namespace RogueLike
             _items.Add("boot_middle_brown3", new BootsMiddleBrown3());
 
             _player.Texture = Content.Load<Texture2D>("player/base/human_m");
+
+            // Load font
+            _font = Content.Load<SpriteFont>("font/SDS");
 
             csMapbuilder mpbuild = new csMapbuilder(WIDTH, HEIGHT)
             {
@@ -820,12 +825,14 @@ namespace RogueLike
 
         void DrawStatus()
         {
-            var f = Content.Load<SpriteFont>("font/SDS");
             int x = TILE_WIDTH/2;
             int y = TILE_HEIGHT/2;
 
-            _spriteBatch.DrawString(f, "Test", new Vector2(x,y), Color.Red);
-            var p = new Vector2(x, y);
+            foreach (var message in _messageQueue)
+            {
+                _spriteBatch.DrawString(_font, message.Key, new Vector2(x, y), message.Value);
+                y += TILE_HEIGHT;
+            }
         }
     }
 }
