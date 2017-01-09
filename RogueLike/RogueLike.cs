@@ -427,6 +427,8 @@ namespace RogueLike
 
             DrawEquipment();
 
+            DrawStatus();
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -809,6 +811,21 @@ namespace RogueLike
 
                 yborder += TILE_HEIGHT * 2;
             }
+        }
+
+        void DrawPlayerBars()
+        {
+            
+        }
+
+        void DrawStatus()
+        {
+            var f = Content.Load<SpriteFont>("font/SDS");
+            int x = TILE_WIDTH/2;
+            int y = TILE_HEIGHT/2;
+
+            _spriteBatch.DrawString(f, "Test", new Vector2(x,y), Color.Red);
+            var p = new Vector2(x, y);
         }
     }
 }

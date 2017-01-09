@@ -5,16 +5,26 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RogueLike", "RogueLike\RogueLike.csproj", "{84E618C5-49B5-4B6C-86D8-F672313A2C13}"
 EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "RogueLikeContent", "RogueLikeContent\RogueLikeContent.contentproj", "{36177042-7283-4D0E-A1F1-8322DFDE47E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84E618C5-49B5-4B6C-86D8-F672313A2C13}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{84E618C5-49B5-4B6C-86D8-F672313A2C13}.Debug|x86.ActiveCfg = Debug|x86
 		{84E618C5-49B5-4B6C-86D8-F672313A2C13}.Debug|x86.Build.0 = Debug|x86
+		{84E618C5-49B5-4B6C-86D8-F672313A2C13}.Release|Any CPU.ActiveCfg = Release|x86
 		{84E618C5-49B5-4B6C-86D8-F672313A2C13}.Release|x86.ActiveCfg = Release|x86
 		{84E618C5-49B5-4B6C-86D8-F672313A2C13}.Release|x86.Build.0 = Release|x86
+		{36177042-7283-4D0E-A1F1-8322DFDE47E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36177042-7283-4D0E-A1F1-8322DFDE47E4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{36177042-7283-4D0E-A1F1-8322DFDE47E4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{36177042-7283-4D0E-A1F1-8322DFDE47E4}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
