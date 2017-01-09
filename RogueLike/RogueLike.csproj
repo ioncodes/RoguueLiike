@@ -38,17 +38,17 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DamageDescriber.cs" />
-    <Compile Include="Dungeon.cs" />
-    <Compile Include="Enemies\Elf.cs" />
-    <Compile Include="Enemies\Dwarf.cs" />
-    <Compile Include="Enemies\Enemy.cs" />
-    <Compile Include="Enemies\Gnoll.cs" />
-    <Compile Include="Enemies\GoldenEye.cs" />
-    <Compile Include="EnemyKI.cs" />
-    <Compile Include="Equipment.cs" />
-    <Compile Include="IEntityInfo.cs" />
-    <Compile Include="InternalSettings.cs" />
+    <Compile Include="Other\DamageDescriber.cs" />
+    <Compile Include="Dungeon\Dungeon.cs" />
+    <Compile Include="Entities\Enemies\Elf.cs" />
+    <Compile Include="Entities\Enemies\Dwarf.cs" />
+    <Compile Include="Entities\Enemies\Enemy.cs" />
+    <Compile Include="Entities\Enemies\Gnoll.cs" />
+    <Compile Include="Entities\Enemies\GoldenEye.cs" />
+    <Compile Include="Entities\Enemies\EnemyKI.cs" />
+    <Compile Include="Entities\Subs\Equipment.cs" />
+    <Compile Include="Entities\IEntityInfo.cs" />
+    <Compile Include="Other\InternalSettings.cs" />
     <Compile Include="Inventory\BootsMiddleBrown3.cs" />
     <Compile Include="Inventory\IronHelmet3.cs" />
     <Compile Include="Inventory\IronHelmet2.cs" />
@@ -63,9 +63,9 @@
     <Compile Include="Levels\Level1.cs" />
     <Compile Include="Levels\Level0.cs" />
     <Compile Include="Levels\LevelInfo.cs" />
-    <Compile Include="MapTile.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="Position.cs" />
+    <Compile Include="Dungeon\MapTile.cs" />
+    <Compile Include="Entities\Player.cs" />
+    <Compile Include="Entities\Subs\Position.cs" />
     <Compile Include="RogueLike.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
