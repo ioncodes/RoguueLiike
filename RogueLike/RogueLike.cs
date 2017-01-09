@@ -229,6 +229,10 @@ namespace RogueLike
                             _enemies.Add(kvp.Key, kvp.Value);
                             enemyCounter++;
                         }
+                        if (r.Next(0, 15) == 6)
+                        {
+                            _map[i, j].AdditionalTextures.Add(_gold.ElementAt(r.Next(_gold.Count)).Value.Texture);
+                        }
                     }
                     else
                     {
@@ -419,9 +423,22 @@ namespace RogueLike
                         if (_map[x, y].AdditionalTextures.Count > 0)
                         {
                             // blood, etc...
+                            bool drawMoney = false;
                             foreach (var texture in _map[x, y].AdditionalTextures)
                             {
-                                _spriteBatch.Draw(texture, pos);
+                                if (!texture.Name.Contains("money"))
+                                    _spriteBatch.Draw(texture, pos);
+                                else
+                                    drawMoney = true;
+                            }
+                            if (drawMoney)
+                            {
+                                foreach (var texture in _map[x, y].AdditionalTextures)
+                                {
+                                    if (!texture.Name.Contains("money")) continue;
+                                    _spriteBatch.Draw(texture, pos);
+                                    break;
+                                }
                             }
                         }
 
