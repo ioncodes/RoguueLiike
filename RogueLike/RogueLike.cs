@@ -54,7 +54,7 @@ namespace RogueLike
         readonly Dictionary<string, Texture2D> _helmets = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, InventoryItem> _items = new Dictionary<string, InventoryItem>();
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
-        readonly Dictionary<string, Color> _messageQueue = new Dictionary<string, Color>();
+        private readonly List<Tuple<string, Color>> _messageQueue = new List<Tuple<string, Color>>();
         List<Enemy> _enemyTypes = new List<Enemy>();
         private SpriteFont _font;
 
@@ -471,7 +471,8 @@ namespace RogueLike
             if (enemy == null)
                 return false;
             Console.WriteLine("Attack");
-            _messageQueue.Add("You attacked " + enemy.Name, Color.Red);
+            var s = new List<string[]>();
+            _messageQueue.Add(new Tuple<string, Color>("You attacked " + enemy.Name, Color.Red));
             _player.Health -= enemy.Attack;
             enemy.Health -= _player.Attack;
 
@@ -831,7 +832,7 @@ namespace RogueLike
 
             foreach (var message in _messageQueue)
             {
-                _spriteBatch.DrawString(_font, message.Key, new Vector2(x, y), message.Value);
+                _spriteBatch.DrawString(_font, message.Item1, new Vector2(x, y), message.Item2);
                 y += TILE_HEIGHT;
             }
         }
