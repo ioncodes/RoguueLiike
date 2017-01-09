@@ -161,7 +161,8 @@ namespace RogueLike
                 Corridor_Min = 2,
                 RoomDistance = 5,
                 Room_Max = new Size(7,7),
-                Room_Min = new Size(4,4)
+                Room_Min = new Size(4,4),
+                Corridor_MaxTurns = 5
             };
             int[,] randomMap = new int[WIDTH, HEIGHT];
             if (mpbuild.Build_ConnectedStartRooms() == true)
