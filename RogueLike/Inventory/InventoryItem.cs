@@ -15,6 +15,7 @@ namespace RogueLike
         public abstract int Health { get; }
         public abstract int Shield { get; }
         public abstract Texture2D Texture { get; set; }
+        public abstract int Value { get; }
     }
 
     public enum ItemType
@@ -24,6 +25,7 @@ namespace RogueLike
         Mail,
         Boots,
         HealthSlot,
-        Shield
+        Shield,
+        Money
     }
 }
