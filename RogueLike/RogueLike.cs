@@ -54,7 +54,7 @@ namespace RogueLike
         readonly Dictionary<string, Texture2D> _helmets = new Dictionary<string, Texture2D>();
         readonly Dictionary<string, InventoryItem> _items = new Dictionary<string, InventoryItem>();
         readonly Dictionary<string, Enemy> _enemies = new Dictionary<string, Enemy>();
-        private readonly List<Tuple<string, Color>> _messageQueue = new List<Tuple<string, Color>>();
+        private List<Tuple<string, Color, int>> _messageQueue = new List<Tuple<string, Color, int>>();
         List<Enemy> _enemyTypes = new List<Enemy>();
         private SpriteFont _font;
 
@@ -262,14 +262,15 @@ namespace RogueLike
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (_framesPassed > 5)
+                _framesPassed = 0;
+            _framesPassed++;
+
+            var temp = (from message in _messageQueue where message.Item3 < 180 select new Tuple<string, Color, int>(message.Item1, message.Item2, message.Item3 + 1)).ToList();
+            _messageQueue = temp;
+
             MouseState mouseState = Mouse.GetState();
             _internalSettings.Cursor.Position = new Vector2(mouseState.X, mouseState.Y);
-
-            if (_framesPassed > 5)
-            {
-                _framesPassed = 0;
-            }
-            _framesPassed++;
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -465,14 +466,12 @@ namespace RogueLike
 
         bool Attack(int x, int y)
         {
-
             int[] virtPos = GetVirtualPostition(x, y);
             Enemy enemy = GetEnemy(virtPos[0], virtPos[1]);
             if (enemy == null)
                 return false;
             Console.WriteLine("Attack");
-            var s = new List<string[]>();
-            _messageQueue.Add(new Tuple<string, Color>("You attacked " + enemy.Name, Color.Red));
+            _messageQueue.Add(new Tuple<string, Color, int>("You attacked " + enemy.Name, Color.Red, 0));
             _player.Health -= enemy.Attack;
             enemy.Health -= _player.Attack;
 
@@ -542,6 +541,7 @@ namespace RogueLike
 
         void KillEnemy(Enemy enemy)
         {
+            _messageQueue.Add(new Tuple<string, Color, int>("You killed " + enemy.Name, Color.Green, 0));
             Drop(enemy.XPReward); 
             _map[enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT].AdditionalTextures.Add(
                 _textures["blood_red"]);
@@ -554,8 +554,10 @@ namespace RogueLike
         {
             // give xp
             _player.XP += xp;
+            _messageQueue.Add(new Tuple<string, Color, int>("You received " + xp + " XP", Color.Blue, 0));
             // drop item
             var drop = _items.ElementAt(r.Next(_items.Count));
+            _messageQueue.Add(new Tuple<string, Color, int>("You received " + drop.Value.Name, Color.Blue, 0));
             _player.Inventory.Items.Add(drop.Value);
             switch (drop.Value.ItemType)
             {
@@ -631,6 +633,7 @@ namespace RogueLike
         void LevelUp()
         {
             if (_player.Level.Level == 1) return; // max level here
+            _messageQueue.Add(new Tuple<string, Color, int>("You reached level " + _player.Level.Level+1, Color.Blue, 0));
             int lvl = _player.Level.Level;
             int origDamage = _player.Level.Damage;
             int origShield = _player.Level.Shield;
@@ -832,8 +835,8 @@ namespace RogueLike
 
             foreach (var message in _messageQueue)
             {
-                _spriteBatch.DrawString(_font, message.Item1, new Vector2(x, y), message.Item2);
-                y += TILE_HEIGHT;
+                _spriteBatch.DrawString(_font, message.Item1, new Vector2(x, y), message.Item2, 0f, Vector2.Zero, new Vector2(0.75f,0.75f), SpriteEffects.None, 0f);
+                y += TILE_HEIGHT/2;
             }
         }
     }
