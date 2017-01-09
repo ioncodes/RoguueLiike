@@ -33,6 +33,7 @@ namespace RogueLike
         private const int ENEMY_AMOUNT = 150; // around 150 is a good number
         private const int ENEMY_RADIUS = 3;
         private int enemyCounter = 0;
+        private bool drawOverlay = false;
         Random r = new Random();
 
         MapTile[,] _map = new MapTile[WIDTH, HEIGHT];
@@ -153,7 +154,9 @@ namespace RogueLike
 
             csMapbuilder mpbuild = new csMapbuilder(WIDTH, HEIGHT)
             {
-                MaxRooms = 20
+                MaxRooms = 20,
+                Corridor_Max = 5,
+                Corridor_Min = 2
             };
             int[,] randomMap = new int[WIDTH, HEIGHT];
             if (mpbuild.Build_ConnectedStartRooms() == true)
@@ -250,7 +253,6 @@ namespace RogueLike
         {
             MouseState mouseState = Mouse.GetState();
             _internalSettings.Cursor.Position = new Vector2(mouseState.X, mouseState.Y);
-            Console.WriteLine(_internalSettings.Cursor.Position.ToString());
 
             if (_framesPassed > 5)
             {
@@ -260,6 +262,8 @@ namespace RogueLike
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            if (Keyboard.GetState().IsKeyDown(Keys.Tab))
+                drawOverlay = drawOverlay == false;
             if (_framesPassed > 5 && Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 if (VerifyMovement(-1, 0))
@@ -345,6 +349,8 @@ namespace RogueLike
                 CalculateUnseen();
             }
 
+            _player.Health = 1000;
+
             base.Update(gameTime);
         }
 
@@ -357,14 +363,14 @@ namespace RogueLike
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
 
-            for (int i = -10; i < FOV/2; i++)
+            for (int i = FOV/2*-1; i < FOV/2; i++)
             {
                 var x = (_player.Position.X/TILE_WIDTH) + i;
                 if (x >= WIDTH)
                     continue;
                 if (x < 0)
                     continue;
-                for (int j = -10; j < FOV/2; j++)
+                for (int j = FOV / 2 * -1; j < FOV/2; j++)
                 {
                     var y = (_player.Position.Y/TILE_HEIGHT) + j;
                     if (y < 0)
@@ -373,8 +379,8 @@ namespace RogueLike
                         continue;
                     if (!_map[x, y].IsUnseen)
                     {
-                        _spriteBatch.Draw(_map[x, y].Texture, new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT));
-                        var pos = new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT);
+                        _spriteBatch.Draw(_map[x, y].Texture, new Vector2((i + FOV / 2) *TILE_WIDTH, (j + FOV / 2) *TILE_HEIGHT));
+                        var pos = new Vector2((i + FOV / 2) *TILE_WIDTH, (j + FOV / 2) *TILE_HEIGHT);
 
                         if (_map[x, y].AdditionalTextures.Count > 0)
                         {
@@ -737,8 +743,12 @@ namespace RogueLike
         {
             for (int i = PLAYER_FOV*-1; i <= PLAYER_FOV; i++)
             {
+                if (i < 0)
+                    i *= -1;
                 for (int j = PLAYER_FOV*-1; j <= PLAYER_FOV; j++)
                 {
+                    if (j < 0)
+                        j *= -1;
                     _map[(_player.Position.X/TILE_WIDTH) + i, (_player.Position.Y/TILE_HEIGHT) + j].IsUnseen = false;
                 }
             }
