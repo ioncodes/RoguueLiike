@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Inventory\Gold.cs" />
     <Compile Include="Other\DamageDescriber.cs" />
     <Compile Include="Dungeon\Dungeon.cs" />
     <Compile Include="Entities\Enemies\Elf.cs" />
