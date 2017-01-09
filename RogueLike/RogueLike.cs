@@ -231,7 +231,11 @@ namespace RogueLike
                         }
                         if (r.Next(0, 15) == 6)
                         {
-                            _map[i, j].AdditionalTextures.Add(_gold.ElementAt(r.Next(_gold.Count)).Value.Texture);
+                            _map[i, j].Gold = new Gold();
+                            var gold = _gold.ElementAt(r.Next(_gold.Count));
+                            _map[i, j].AdditionalTextures.Add(gold.Value.Texture);
+                            var ggold = new Gold();
+                            _map[i, j].Gold = ggold;
                         }
                     }
                     else
@@ -387,6 +391,7 @@ namespace RogueLike
                 CalculateUnseen();
             }
 
+            CheckForPickup();
             _player.Health = 1000;
 
             base.Update(gameTime);
@@ -603,6 +608,8 @@ namespace RogueLike
                     if (i.Value.Name == item1.Name)
                     {
                         ii = i;
+                        ii.Value.Value = i.Value.Value;
+                        break;
                     }
                 }
                 _messageQueue.Add(new Tuple<string, Color, int>("You received " + ii.Value.Name, Color.Blue, 0));
@@ -657,16 +664,18 @@ namespace RogueLike
                         }
                         break;
                 }
-                bool alreadyExists = false;
-                foreach (var i in _player.Inventory.Items)
+                int index = _player.Inventory.Items.FindIndex(item => item.Name == ii.Value.Name);
+                if (index < 0)
                 {
-                    if (i.Name != ii.Value.Name) continue;
-                    i.Amount++;
-                    alreadyExists = true;
-                    break;
+                    if (ii.Value.Name != "Gold")
+                    {
+                        _player.Inventory.Items.Add(ii.Value);
+                    }
                 }
-                if(!alreadyExists)
-                    _player.Inventory.Items.Add(ii.Value);
+                else
+                {
+                    _player.Inventory.Items[index].Amount++;
+                }
                 UpdatePlayerStats(ii.Value);
             }
             _player.Equipment.Thumbnails.Update();
@@ -933,6 +942,31 @@ namespace RogueLike
                 items.Add(item);
             }
             return items;
+        }
+
+        void CheckForPickup()
+        {
+            Texture2D t = null;
+            foreach (var texture in _map[_player.Position.X / TILE_WIDTH, _player.Position.Y / TILE_HEIGHT].AdditionalTextures)
+            {
+                if (texture.Name.StartsWith("money/"))
+                {
+                    var gold = _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].Gold;
+                    foreach (var item in _player.Inventory.Items)
+                    {
+                        if (item.Name == "Gold")
+                        {
+                            item.Value += gold.Value;
+                            break;
+                        }
+                    }
+                    t = texture;
+                }
+            }
+            //int index = _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].AdditionalTextures.IndexOf(t);
+            if (t == null) return;
+            _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].AdditionalTextures.Remove(t);
+            _map[_player.Position.X/TILE_WIDTH, _player.Position.Y/TILE_HEIGHT].Gold = null;
         }
     }
 }

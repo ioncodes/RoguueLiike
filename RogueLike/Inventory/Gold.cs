@@ -2,7 +2,7 @@
 
 namespace RogueLike.Inventory
 {
-    class Gold : InventoryItem
+    public class Gold : InventoryItem
     {
         public override string Name { get; } = "Gold";
         public override ItemType ItemType { get; } = ItemType.Money;
