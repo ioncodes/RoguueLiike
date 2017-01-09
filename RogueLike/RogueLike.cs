@@ -182,30 +182,12 @@ namespace RogueLike
                         if (r.Next(0, 8) == 1 && _map[i, j].EntityTexture == null && enemyCounter < ENEMY_AMOUNT &&
                             !IsEnemyNearby(i, j)) // around 10 is a good number
                         {
-                            int enemyRandSelector = r.Next(0, 10);
-                            var kvp = new KeyValuePair<string, Enemy>();
-                            if (enemyRandSelector >= 0 && enemyRandSelector < 7)
-                            {
-                                //elf
-                                kvp = new KeyValuePair<string, Enemy>(
-                                    "elf" + Guid.NewGuid().ToString().Substring(0, 10),
-                                    new Dwarf()
-                                    {
-                                        Texture = Content.Load<Texture2D>("enemy/elf"),
-                                        Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT)
-                                    });
-                            }
-                            else if (enemyRandSelector >= 7)
-                            {
-                                //dwarf
-                                kvp = new KeyValuePair<string, Enemy>(
-                                    "dwarf" + Guid.NewGuid().ToString().Substring(0, 10),
-                                    new Dwarf()
-                                    {
-                                        Texture = Content.Load<Texture2D>("enemy/dwarf"),
-                                        Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT)
-                                    });
-                            }
+                            int enemyRandSelector = r.Next(0, _enemyTypes.Count);
+                            var type = _enemyTypes[enemyRandSelector].GetType();
+                            var enemy = (Enemy)Activator.CreateInstance(type);
+                            enemy.Position = new Position(i*TILE_WIDTH, j*TILE_HEIGHT);
+                            enemy.Texture = Content.Load<Texture2D>(enemy.TextureName);
+                            var kvp = new KeyValuePair<string, Enemy>(enemy.Name + Guid.NewGuid(), enemy);
                             _map[i, j].EntityTexture = kvp.Value.Texture;
                             _map[i, j].EntityName = kvp.Key;
                             _enemies.Add(kvp.Key, kvp.Value);
@@ -442,7 +424,7 @@ namespace RogueLike
         {
             foreach (var enemy in _enemies)
             {
-                int[] mov = enemy.Value.EnemeKi.Decide(_map, enemy.Value, enemy.Key, _player);
+                int[] mov = enemy.Value.EnemyKi.Decide(_map, enemy.Value, enemy.Key, _player);
                 _map[enemy.Value.Position.X/TILE_WIDTH, enemy.Value.Position.Y/TILE_HEIGHT].EntityTexture = null;
                 enemy.Value.Position.X += mov[0];
                 enemy.Value.Position.Y += mov[1];
@@ -458,43 +440,29 @@ namespace RogueLike
             int[] virtPos = GetVirtualPostition(x, y);
 
             bool isValid = _map[virtPos[0], virtPos[1]].Texture.Name != "wall/vines0";
-            return isValid &&
-                   _enemies.All(
-                       enemy =>
-                           !IsCovering(enemy.Value.Position,
-                               new Position(virtPos[0]*TILE_WIDTH, virtPos[1]*TILE_HEIGHT)));
+            Enemy enemy = GetEnemy(virtPos[0], virtPos[1]);
+            return isValid && enemy == null;
         }
 
         bool Attack(int x, int y)
         {
             int[] virtPos = GetVirtualPostition(x, y);
-            if (
-                !_enemies.Any(
-                    enemy =>
-                            IsCovering(enemy.Value.Position, new Position(virtPos[0]*TILE_WIDTH, virtPos[1]*TILE_HEIGHT))))
+            Enemy enemy = GetEnemy(virtPos[0], virtPos[1]);
+            if (enemy == null)
                 return false;
             Console.WriteLine("Attack");
 
-            var target = GetEnemy(virtPos);
-
-            _player.Health -= target.Value.Attack;
-            target.Value.Health -= _player.Attack;
+            _player.Health -= enemy.Attack;
+            enemy.Health -= _player.Attack;
 
             if (IsPlayerDead())
             {
                 Die();
                 return false;
             }
-            if (target.Value.Health > 0) return false;
-            KillEnemey(target.Key);
+            if (enemy.Health > 0) return false;
+            KillEnemy(enemy);
             return true;
-        }
-
-        bool IsCovering(Position p1, Position p2)
-        {
-            if (p1.X == p2.X && p1.Y == p2.Y)
-                return true;
-            return false;
         }
 
         bool IsEnemyNext(int x, int y)
@@ -524,22 +492,12 @@ namespace RogueLike
 
         Enemy GetEnemy(int x, int y)
         {
-            x *= TILE_WIDTH;
-            y *= TILE_HEIGHT;
-
-            return
-                (from enemy in _enemies where IsCovering(enemy.Value.Position, new Position(x, y)) select enemy.Value)
-                    .FirstOrDefault();
+            return _map[x, y].EntityName == null ? null : _enemies[_map[x, y].EntityName];
         }
 
-        KeyValuePair<string, Enemy> GetEnemy(int[] virtPos)
+        string GetEnemyName(int x, int y)
         {
-            virtPos[0] *= TILE_WIDTH;
-            virtPos[1] *= TILE_HEIGHT;
-            return
-            (from enemy in _enemies
-                where IsCovering(enemy.Value.Position, new Position(virtPos[0], virtPos[1]))
-                select enemy).FirstOrDefault();
+            return _map[x, y].EntityName;
         }
 
         bool IsPlayerDead()
@@ -553,12 +511,22 @@ namespace RogueLike
             LoadContent();
         }
 
-        void KillEnemey(string name)
+        void KillEnemy(string name)
         {
-            Drop(_enemies[name].XPReward); // enemy list is fast empty
+            Drop(_enemies[name].XPReward);
             _map[_enemies[name].Position.X/TILE_WIDTH, _enemies[name].Position.Y/TILE_HEIGHT].AdditionalTextures.Add(
                 _textures["blood_red"]);
             _enemies.Remove(name);
+        }
+
+        void KillEnemy(Enemy enemy)
+        {
+            Drop(enemy.XPReward); 
+            _map[enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT].AdditionalTextures.Add(
+                _textures["blood_red"]);
+            _enemies.Remove(GetEnemyName(enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT));
+            _map[enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT].EntityTexture = null;
+            _map[enemy.Position.X / TILE_WIDTH, enemy.Position.Y / TILE_HEIGHT].EntityName = null;
         }
 
         void Drop(int xp)

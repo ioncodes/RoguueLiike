@@ -8,20 +8,20 @@ using RogueLike.Levels;
 
 namespace RogueLike.Enemies
 {
-    class Elf : Enemy
+    class Gnoll : Enemy
     {
-        public override string Name { get; set; } = "Elf";
-        public override EnemyType EnemyType { get; } = EnemyType.Elf;
+        public override string Name { get; set; } = "Gnoll";
+        public override EnemyType EnemyType { get; } = EnemyType.Creature;
         public override Texture2D Texture { get; set; }
-        public override string TextureName { get; set; } = "enemy/elf";
+        public override string TextureName { get; set; } = "enemy/gnoll";
         public override Position Position { get; set; }
-        public override int Health { get; set; } = 10;
-        public override int MaxHealth { get; set; } = 10;
-        public override int Attack { get; set; } = 3;
-        public override int Shield { get; set; } = 0;
+        public override int Health { get; set; } = 25;
+        public override int MaxHealth { get; set; } = 25;
+        public override int Attack { get; set; } = 12;
+        public override int Shield { get; set; } = 2;
         public override Inventory Inventory { get; set; } = new Inventory();
         public override Equipment Equipment { get; set; } = new Equipment();
-        public override int XPReward { get; set; } = 20;
+        public override int XPReward { get; set; } = 60;
         public override EnemyKI EnemyKi { get; } = new EnemyKI();
         public override LevelInfo Level { get; set; } = new Level0();
     }

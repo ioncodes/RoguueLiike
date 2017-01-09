@@ -28,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -43,8 +43,11 @@
     <Compile Include="Enemies\Elf.cs" />
     <Compile Include="Enemies\Dwarf.cs" />
     <Compile Include="Enemies\Enemy.cs" />
+    <Compile Include="Enemies\Gnoll.cs" />
+    <Compile Include="Enemies\GoldenEye.cs" />
     <Compile Include="EnemyKI.cs" />
     <Compile Include="Equipment.cs" />
+    <Compile Include="IEntityInfo.cs" />
     <Compile Include="InternalSettings.cs" />
     <Compile Include="Inventory\BootsMiddleBrown3.cs" />
     <Compile Include="Inventory\IronHelmet3.cs" />
