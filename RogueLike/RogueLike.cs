@@ -575,13 +575,13 @@ namespace RogueLike
             LoadContent();
         }
 
-        void KillEnemy(string name)
-        {
-            Drop(_enemies[name].XPReward, _enemies[name].Inventory.Items);
-            _map[_enemies[name].Position.X/TILE_WIDTH, _enemies[name].Position.Y/TILE_HEIGHT].AdditionalTextures.Add(
-                _textures["blood_red"]);
-            _enemies.Remove(name);
-        }
+        //void KillEnemy(string name)
+        //{
+        //    Drop(_enemies[name].XPReward, _enemies[name].Inventory.Items);
+        //    _map[_enemies[name].Position.X/TILE_WIDTH, _enemies[name].Position.Y/TILE_HEIGHT].AdditionalTextures.Add(
+        //        _textures["blood_red"]);
+        //    _enemies.Remove(name);
+        //}
 
         void KillEnemy(Enemy enemy)
         {
@@ -602,53 +602,48 @@ namespace RogueLike
             // drop item
             foreach (var item1 in items)
             {
-                KeyValuePair<string, InventoryItem> ii = new KeyValuePair<string, InventoryItem>();
                 foreach (var i in _items)
                 {
-                    if (i.Value.Name == item1.Name)
-                    {
-                        ii = i;
-                        ii.Value.Value = i.Value.Value;
-                        break;
-                    }
+                    if (i.Value.Name == "Gold")
+                        _player.Inventory.GetGold().Value += item1.Value;
                 }
-                _messageQueue.Add(new Tuple<string, Color, int>("You received " + ii.Value.Name, Color.Blue, 0));
-                _player.Inventory.Items.Add(ii.Value);
-                switch (ii.Value.ItemType)
+                _messageQueue.Add(new Tuple<string, Color, int>("You received " + item1.Name, Color.Blue, 0));
+                _player.Inventory.Items.Add(item1);
+                switch (item1.ItemType)
                 {
                     case ItemType.Weapon:
                         if (_player.Equipment.Thumbnails.Weapon == null)
                         {
-                            _player.Equipment.Thumbnails.Weapon = _thumbWeapons[ii.Key];
-                            _player.Equipment.Skins.Weapon = _weapons[ii.Key];
+                            _player.Equipment.Thumbnails.Weapon = _thumbWeapons[item1.Name];
+                            _player.Equipment.Skins.Weapon = _weapons[item1.Key];
                         }
                         break;
                     case ItemType.Shield:
                         if (_player.Equipment.Thumbnails.Shield == null)
                         {
-                            _player.Equipment.Thumbnails.Shield = _thumbShields[ii.Key];
-                            _player.Equipment.Skins.Shield = _shields[ii.Key];
+                            _player.Equipment.Thumbnails.Shield = _thumbShields[item1.Key];
+                            _player.Equipment.Skins.Shield = _shields[item1.Key];
                         }
                         break;
                     case ItemType.Boots:
                         if (_player.Equipment.Thumbnails.Boots == null)
                         {
-                            _player.Equipment.Thumbnails.Boots = _thumbBoots[ii.Key];
-                            _player.Equipment.Skins.Boots = _boots[ii.Key];
+                            _player.Equipment.Thumbnails.Boots = _thumbBoots[item1.Key];
+                            _player.Equipment.Skins.Boots = _boots[item1.Key];
                         }
                         break;
                     case ItemType.Helmet:
                         if (_player.Equipment.Thumbnails.Helmet == null)
                         {
-                            _player.Equipment.Thumbnails.Helmet = _thumbHelmets[ii.Key];
-                            _player.Equipment.Skins.Helmet = _helmets[ii.Key];
+                            _player.Equipment.Thumbnails.Helmet = _thumbHelmets[item1.Key];
+                            _player.Equipment.Skins.Helmet = _helmets[item1.Key];
                         }
                         break;
                     case ItemType.Mail:
                         if (_player.Equipment.Thumbnails.Mail == null)
                         {
-                            _player.Equipment.Thumbnails.Mail = _thumbMails[ii.Key];
-                            _player.Equipment.Skins.Mail = _mails[ii.Key];
+                            _player.Equipment.Thumbnails.Mail = _thumbMails[item1.Key];
+                            _player.Equipment.Skins.Mail = _mails[item1.Key];
                         }
                         break;
                     case ItemType.Money:
@@ -658,25 +653,25 @@ namespace RogueLike
                             {
                                 if (item.Name == "Gold")
                                 {
-                                    item.Value += ii.Value.Value;
+                                    item.Value += item1.Value;
                                 }
                             }
                         }
                         break;
                 }
-                int index = _player.Inventory.Items.FindIndex(item => item.Name == ii.Value.Name);
+                int index = _player.Inventory.Items.FindIndex(item => item.Name == item1.Name);
                 if (index < 0)
                 {
-                    if (ii.Value.Name != "Gold")
+                    if (item1.Name != "Gold")
                     {
-                        _player.Inventory.Items.Add(ii.Value);
+                        _player.Inventory.Items.Add(item1);
                     }
                 }
                 else
                 {
                     _player.Inventory.Items[index].Amount++;
                 }
-                UpdatePlayerStats(ii.Value);
+                UpdatePlayerStats(item1);
             }
             _player.Equipment.Thumbnails.Update();
             _player.Equipment.Skins.Update();

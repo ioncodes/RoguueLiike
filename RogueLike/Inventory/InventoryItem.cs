@@ -12,6 +12,7 @@ namespace RogueLike.Inventory
         public abstract Texture2D Texture { get; set; }
         public abstract int Value { get; set; }
         public abstract int Amount { get; set; }
+        public abstract string Key { get; set; }
     }
 
     public enum ItemType

@@ -11,5 +11,17 @@ namespace RogueLike.Inventory
             Items.Add(new Gold());
             Items[0].Value = 10;
         }
+
+        public Gold GetGold()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Name == "Gold")
+                {
+                    return (Gold)item;
+                }
+            }
+            return null;
+        }
     }
 }

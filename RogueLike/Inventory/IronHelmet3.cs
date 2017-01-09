@@ -12,5 +12,6 @@ namespace RogueLike.Inventory
         public override Texture2D Texture { get; set; }
         public override int Value { get; set; } = 10;
         public override int Amount { get; set; }
+        public override string Key { get; set; } = "iron_helmet3";
     }
 }
