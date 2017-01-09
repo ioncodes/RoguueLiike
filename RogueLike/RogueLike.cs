@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -11,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using RogueLike.Enemies;
 using RogueLike.Levels;
 using RogueLikeMapBuilder;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace RogueLike
 {
@@ -156,7 +158,10 @@ namespace RogueLike
             {
                 MaxRooms = 20,
                 Corridor_Max = 5,
-                Corridor_Min = 2
+                Corridor_Min = 2,
+                RoomDistance = 5,
+                Room_Max = new Size(7,7),
+                Room_Min = new Size(4,4)
             };
             int[,] randomMap = new int[WIDTH, HEIGHT];
             if (mpbuild.Build_ConnectedStartRooms() == true)
@@ -743,12 +748,8 @@ namespace RogueLike
         {
             for (int i = PLAYER_FOV*-1; i <= PLAYER_FOV; i++)
             {
-                if (i < 0)
-                    i *= -1;
                 for (int j = PLAYER_FOV*-1; j <= PLAYER_FOV; j++)
                 {
-                    if (j < 0)
-                        j *= -1;
                     _map[(_player.Position.X/TILE_WIDTH) + i, (_player.Position.Y/TILE_HEIGHT) + j].IsUnseen = false;
                 }
             }
