@@ -28,9 +28,10 @@ namespace RogueLike
         private const int TILE_HEIGHT = 32;
         private const int WIDTH = 150;
         private const int HEIGHT = 150;
-        private const int FOV = 20;
+        private const int FOV = 20; // 20 is recommended
         private const int PLAYER_FOV = 1; // 1 or 2 is best
         private const int EQUIPMENT_WIDTH = TILE_WIDTH*4;
+        private const int STATUS_HEIGHT = TILE_HEIGHT;
 
         private const int ENEMY_AMOUNT = 150; // around 150 is a good number
         private const int ENEMY_RADIUS = 3;
@@ -424,7 +425,7 @@ namespace RogueLike
                     else
                     {
                         _spriteBatch.Draw(_textures.FirstOrDefault(t => t.Key == "unseen").Value,
-                            new Vector2((i + 10)*TILE_WIDTH, (j + 10)*TILE_HEIGHT));
+                            new Vector2((i + FOV/2)*TILE_WIDTH, (j + FOV/2)*TILE_HEIGHT));
                     }
                 }
             }
